@@ -1,7 +1,3 @@
-The Models should be in Third Normal Form such that there are no deletion anomalies, updation anomalies or insertion anomalies.
-If there is a many to many relationship between two tables the tables should be broken down to three tables with a one to many relationship. If there is a one to one relatioship between two tables then the tables should be merged to form a single table.
-Make the models complete with appropriate primary and foreign keys and show relatioships and make the models be in a postion to support all the functionalities of the portal to the latter.
-
 Django Web Framework Implementation:
 Models:
 
@@ -34,9 +30,6 @@ Templates:
     success_page.html:
         Display success message with the decrypted serial number.
         Provide options to save the serial number as PNG or PDF.
-
-    track_progress.html:
-        Form for entering the serial number for progress tracking.
 
     progress_report.html:
         Display the generated report with student details, amount disbursed, and date disbursed.
@@ -71,10 +64,6 @@ Views:
     SuccessPageView:
         Display the success page with the decrypted serial number.
 
-    TrackProgressView:
-        Handle GET request: Display progress tracking form.
-        Handle POST request: Validate and process progress tracking.
-
     ProgressReportView:
         Generate and display the progress report for a valid serial number.
 
@@ -87,7 +76,6 @@ urlpatterns = [
     path('', LandingPageView.as_view(), name='landing_page'),
     path('apply/', ApplicationFormView.as_view(), name='apply'),
     path('success/', SuccessPageView.as_view(), name='success'),
-    path('track-progress/', TrackProgressView.as_view(), name='track_progress'),
     path('progress-report/', ProgressReportView.as_view(), name='progress_report'),
 ]
 
