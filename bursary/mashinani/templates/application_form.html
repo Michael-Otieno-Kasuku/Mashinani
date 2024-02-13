@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Bursary Application Form</h1>
+    <form method="post" action="{% url 'apply' %}">
+        {% csrf_token %}
+
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h2>Personal Information</h2>
+            <div class="form-field">
+                <label for="{{ form.national_id.id_for_label }}" class="required">National ID Number:</label>
+                {{ form.national_id }}
+                {{ form.national_id.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
+                {{ form.registration_number }}
+                {{ form.registration_number.errors }}
+            </div>
+        </div>
+
+        <!-- Institution Information Section -->
+        <div class="form-section">
+            <h2>Institution Information</h2>
+            <div class="form-field">
+                <label for="{{ form.institution_name.id_for_label }}" class="required">Institution:</label>
+                {{ form.institution_name }}
+                {{ form.institution_name.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="{{ form.institution_account_number.id_for_label }}" class="required">Institution Account Number:</label>
+                {{ form.institution_account_number }}
+                {{ form.institution_account_number.errors }}
+            </div>
+        </div>
+
+        <!-- Financial Information Section -->
+        <div class="form-section">
+            <h2>Financial Information</h2>
+            <div class="form-field">
+                <label for="{{ form.financial_year.id_for_label }}" class="required">Financial Year:</label>
+                {{ form.financial_year }}
+                {{ form.financial_year.errors }}
+            </div>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="submit-button blue-button">Submit</button>
+            <button type="button" class="red-button">Cancel</button>
+            <button type="reset" class="gray-button">Clear</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

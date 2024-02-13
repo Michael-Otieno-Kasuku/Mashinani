@@ -1,0 +1,98 @@
+Landing Page:
+
+User Interaction:
+
+    The user navigates to the Bursary Mashinani portal.
+    Displays the current bursary application status based on the current financial year.
+    Options available: "Apply" (Blue Button) and "Track Progress" (Green Button).
+
+Apply for Bursary:
+
+User Interaction:
+
+    Clicking on the "Apply" button redirects the user to the application page.
+    Choose Tertiary Institution type (Dropdown with Blue Border).
+    Proceed to the final page for entering personal details.
+
+Personal Details Page:
+
+User Interaction:
+
+    User enters the following information:
+        Valid National ID Number (Blue Input Box).
+        Valid Student Registration Number (Blue Input Box).
+        Valid Institution Name (Dropdown with Blue Border).
+        Valid Institution Account Number (Dropdown with Blue Border).
+
+Application Validation:
+
+System Process:
+
+    Checks the validity of the entered National ID and Student Registration Number.
+    Verifies eligibility and registration as a voter in Kisumu West Constituency.
+    Validates against the current students register of the chosen institution for the given academic year.
+    All fields must be filled correctly; otherwise, appropriate error messages (Red Text) are displayed.
+    Ensures that the National ID and Student Registration Number can only be used to apply once for every financial year.
+
+Submission Options:
+
+User Interaction:
+
+    User can click the "Submit" button (Green Button) to complete the application process.
+    Clicking "Cancel" (Red Button) aborts the application process.
+    "Clear" button (Gray Button) clears or undoes the filled fields.
+    Submission cannot be made when any of the Fields is empty, and validation errors must be addressed before submission.
+
+Application Success:
+
+System Process:
+
+    Upon successful submission, the system generates a unique 8-alphanumeric character serial number.
+    The serial number is encrypted using the RSA encryption algorithm before being stored in the database.
+    A success message (Green Text) is displayed, including the decrypted serial number.
+    User can save the serial number as png or pdf for future reference.
+
+Track Progress:
+
+User Interaction:
+
+    Clicking "Track Progress" (Green Button) redirects the user to a page for entering the serial number.
+
+Progress Tracking Page:
+
+User Interaction:
+
+    User enters the 8-alphanumeric serial number in decrypted format generated during the application.
+    System checks if the serial number matches records in the Successful Applications database.
+
+Generate Report:
+
+System Process:
+
+    If a match is found, the system generates a report with the following details:
+        Valid Student Name.
+        Valid Student Registration Number.
+        Valid Institution Name.
+        Amount Disbursed in Ksh.
+        Date Disbursed.
+
+Report Options:
+
+User Interaction:
+
+    User can save the report as a pdf (Blue Button) for future reference.
+    If the serial number is not found or is invalid, an appropriate error message (Red Text) is displayed.
+    User is redirected to the landing page.
+
+UI/UX Recommendations:
+
+    Use a clean and simple design with a blue and white color scheme.
+    Differentiate interactive elements with distinct colors to guide users (Green for positive actions, Red for negative actions).
+    Provide clear and concise error messages in red for better visibility.
+    Use intuitive icons for actions like submit, cancel, and clear.
+    Ensure a responsive design for a seamless user experience across devices.
+    Include progress indicators (Blue Progress Bar) during lengthy processes to keep users informed.
+    Use tooltips or info icons for guiding users through complex processes.
+    Implement a user-friendly font (Arial or Roboto) and ensure proper spacing for readability.
+    Optimize the layout for easy navigation between sections.
+

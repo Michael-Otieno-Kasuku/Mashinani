@@ -1,0 +1,335 @@
+/* Global Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f0f0f0;
+}
+
+.header {
+    background: #3498db;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.logo {
+    max-width: 100px;
+    height: auto;
+}
+
+.page-title {
+    font-size: 24px;
+    margin: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.footer {
+    background: #3498db;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Buttons */
+.blue-button,
+.green-button,
+.red-button,
+.gray-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.blue-button {
+    background-color: #3498db;
+}
+
+.green-button {
+    background-color: #2ecc71;
+}
+
+.red-button {
+    background-color: #e74c3c;
+}
+
+.gray-button {
+    background-color: #95a5a6;
+}
+
+.blue-button:hover,
+.green-button:hover,
+.red-button:hover,
+.gray-button:hover {
+    background-color: darken(color, 10%);
+    transform: scale(1.05);
+}
+
+/* Form Styles */
+.blue-input-box {
+    border: 2px solid #3498db;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Header Styles */
+h1, h2 {
+    color: #333;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Progress Bar */
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #3498db;
+    transition: width 0.5s ease;
+}
+
+/* Tooltips */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Additional Styles for the Header and Paragraphs */
+.page-title {
+    font-size: 36px; /* Increase the font size for the h1 */
+    color: #3498db; /* Set the color for the h1 */
+    margin-bottom: 10px; /* Add some space below the h1 */
+}
+
+.page-title-white {
+    font-size: 36px; /* Increase the font size for the h1 */
+    color: #fff; /* Set the color for the h1 */
+    margin-bottom: 10px; /* Add some space below the h1 */
+}
+
+.intro-text {
+    font-size: 18px; /* Adjust the font size for the paragraphs */
+    color: #555; /* Set the color for the paragraphs */
+    line-height: 1.5; /* Set the line height for better readability */
+    margin-bottom: 20px; /* Add more space below the paragraphs */
+}
+
+/* Form Styles */
+.form-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.required::after {
+    content: ' *';
+    color: red;
+}
+
+input[type="text"],
+select {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+/* Buttons */
+.submit-button {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.submit-button.blue-button {
+    background-color: #3498db;
+}
+
+.submit-button.blue-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
+/* Form Input Focus Outline */
+input[type="text"].focus-outline,
+select.focus-outline {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* Form Input Invalid State */
+input[type="text"].invalid-input {
+    border-color: red;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    20%, 60% {
+        transform: translateX(-10px);
+    }
+    40%, 80% {
+        transform: translateX(10px);
+    }
+}
+
+.report-form {
+    max-width: 400px;
+    margin: auto;
+}
+
+.serial-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.generate-button,
+.return-button {
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+}
+
+.generate-button {
+    background-color: #007bff; /* Blue color */
+}
+
+.return-button {
+    background-color: #6c757d; /* Gray color */
+}
+
+.success-container {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f0f8ff; /* Light blue background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+    width: 80px;
+    height: 80px;
+}
+
+.success-title {
+    color: #0066cc; /* Dark blue color */
+}
+
+.serial-number {
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.return-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #0066cc;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.return-button:hover {
+    background-color: #004080; /* Darker blue on hover */
+}

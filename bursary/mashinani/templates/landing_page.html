@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Welcome to Bursary Mashinani</h1>
+    <p class="intro-text">Apply for a bursary or check your application status for the current financial year now!</p>
+    <a href="{% url 'apply' %}" class="blue-button">Apply</a>
+    <a href="{% url 'progress_report' %}" class="green-button">Track Progress</a>
+</div>
+{% endblock %}

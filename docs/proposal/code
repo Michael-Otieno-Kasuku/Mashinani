@@ -1,0 +1,265 @@
+Models:
+# models.py
+from django.db import models
+
+class Institution(models.Model):
+    name = models.CharField(max_length=255)
+
+class BursaryApplication(models.Model):
+    national_id_number = models.CharField(max_length=20, help_text="Enter a valid National ID Number")
+    student_registration_number = models.CharField(max_length=20, help_text="Enter a valid Student Registration Number")
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE, help_text="Choose the Tertiary Institution")
+    institution_account_number = models.CharField(max_length=20, help_text="Enter a valid Institution Account Number")
+    financial_year = models.CharField(max_length=10, help_text="Enter the financial year")
+    serial_number = models.CharField(max_length=8, help_text="Auto-generated serial number")
+    date_submitted = models.DateTimeField(auto_now_add=True)
+    amount_disbursed = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Amount disbursed in Ksh")
+    date_disbursed = models.DateTimeField(null=True, blank=True, help_text="Date of disbursement")
+
+Forms:
+
+# forms.py
+from django import forms
+from .models import BursaryApplication
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = BursaryApplication
+        fields = ['national_id_number', 'student_registration_number', 'institution', 'institution_account_number', 'financial_year']
+        widgets = {
+            'institution': forms.Select(attrs={'class': 'blue-border'}),
+            'national_id_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'student_registration_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'institution_account_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
+        }
+
+class ProgressTrackingForm(forms.Form):
+    serial_number = forms.CharField(max_length=8, help_text="Enter the 8-alphanumeric serial number")
+
+Views:
+
+# views.py
+from django.shortcuts import render, redirect
+from django.views import View
+from .forms import ApplicationForm, ProgressTrackingForm
+
+class LandingPageView(View):
+    def get(self, request):
+        # Implement logic to display landing page
+        return render(request, 'landing_page.html')
+
+class ApplicationFormView(View):
+    def get(self, request):
+        form = ApplicationForm()
+        # Implement logic to display application form
+        return render(request, 'application_form.html', {'form': form})
+
+    def post(self, request):
+        form = ApplicationForm(request.POST)
+        # Implement logic to validate and process form data
+        if form.is_valid():
+            # Process valid form data and generate a unique serial number
+            serial_number = "12345678"  # Replace with actual logic to generate a serial number
+            return render(request, 'success_page.html', {'serial_number': serial_number})
+        else:
+            # Handle form validation errors
+            return render(request, 'application_form.html', {'form': form})
+
+class SuccessPageView(View):
+    def get(self, request):
+        # Implement logic to display success page
+        return render(request, 'success_page.html')
+
+class TrackProgressView(View):
+    def get(self, request):
+        form = ProgressTrackingForm()
+        # Implement logic to display progress tracking form
+        return render(request, 'track_progress.html', {'form': form})
+
+    def post(self, request):
+        form = ProgressTrackingForm(request.POST)
+        # Implement logic to validate and process progress tracking
+        if form.is_valid():
+            # Process valid form data and generate a progress report
+            return render(request, 'progress_report.html')
+        else:
+            # Handle form validation errors
+            return render(request, 'track_progress.html', {'form': form})
+
+class ProgressReportView(View):
+    def get(self, request):
+        # Implement logic to display progress report
+        return render(request, 'progress_report.html')
+        
+CSS (main.css):
+/* main.css */
+
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+.blue-button,
+.green-button,
+.red-button,
+.gray-button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.blue-button {
+    background-color: #3498db;
+}
+
+.green-button {
+    background-color: #2ecc71;
+}
+
+.red-button {
+    background-color: #e74c3c;
+}
+
+.gray-button {
+    background-color: #95a5a6;
+}
+
+/* Form Styles */
+form {
+    margin-top: 20px;
+}
+
+.blue-border {
+    border: 2px solid #3498db;
+}
+
+.blue-input-box {
+    border: 2px solid #3498db;
+    padding: 5px;
+}
+
+/* Header Styles */
+h1, h2 {
+    color: #333;
+}
+
+/* Progress Report Styles */
+/* Add styles for the progress report details here */
+
+JavaScript (main.js):
+// main.js
+
+// Add any JavaScript interactions here
+// You can use jQuery or plain JavaScript as needed
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Add any DOM manipulation or event listeners here
+    // For example, you can add an event listener for a button click
+    var trackButton = document.querySelector('.blue-button');
+
+    if (trackButton) {
+        trackButton.addEventListener('click', function (event) {
+            // Add logic for tracking progress here
+            // You may want to prevent the default form submission and perform an AJAX request
+            alert('Tracking progress...');
+            event.preventDefault();
+        });
+    }
+});
+
+Now, link these files in your base.html:
+
+<!-- base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bursary Mashinani Portal</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
+
+
+Landing Page Template (landing_page.html):
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Welcome to Bursary Mashinani Portal</h1>
+  <p>Check your bursary application status for the current financial year.</p>
+  <a href="{% url 'apply' %}" class="blue-button">Apply</a>
+  <a href="{% url 'track_progress' %}" class="green-button">Track Progress</a>
+{% endblock %}
+
+Application Form Template (application_form.html):
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Apply for Bursary</h2>
+  <form method="post" action="{% url 'apply' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="green-button">Submit</button>
+    <button type="button" class="red-button">Cancel</button>
+    <button type="button" class="gray-button">Clear</button>
+  </form>
+{% endblock %}
+
+Success Page Template (success_page.html):
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Application Submitted Successfully!</h2>
+  <p>Your unique serial number is: {{ serial_number }}</p>
+  <a href="{% url 'landing_page' %}" class="blue-button">Return to Home</a>
+{% endblock %}
+
+Track Progress Template (track_progress.html):
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Track Progress</h2>
+  <form method="post" action="{% url 'progress_report' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="blue-button">Track</button>
+  </form>
+{% endblock %}
+
+Progress Report Template (progress_report.html):
+
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Progress Report</h2>
+  <!-- Display progress report details here -->
+  <a href="#" class="blue-button">Save as PDF</a>
+  <a href="{% url 'landing_page' %}" class="blue-button">Return to Home</a>
+{% endblock %}
+
