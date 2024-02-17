@@ -12,10 +12,10 @@ from io import BytesIO
 
 class LandingPageView(View):
     def get(self, request):
-        return render(request, 'mashinani/landing_page.html')
+        return render(request, 'landing_page.html')
 
 class ApplicationFormView(View):
-    template_name = 'mashinani/application_form.html'
+    template_name = 'application_form.html'
     
     def get(self, request):
         form = ApplicationForm()
@@ -60,7 +60,7 @@ class ApplicationFormView(View):
 class SuccessPageView(View):
     def get(self, request, *args, **kwargs):
         serial_number = self.kwargs.get('serial_number', None)
-        return render(request, 'mashinani/success_page.html', {'serial_number': serial_number})
+        return render(request, 'success_page.html', {'serial_number': serial_number})
 
 def generate_serial_number(national_id, reg_number, financial_year, institution):
     data_string = f"{national_id}-{reg_number}-{financial_year}-{institution}"
@@ -71,14 +71,14 @@ def generate_serial_number(national_id, reg_number, financial_year, institution)
 
 class ProgressReportView(View):
     def get(self, request):
-        return render(request, 'mashinani/progress_report.html')
+        return render(request, 'progress_report.html')
 
     def post(self, request):
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
         except BursaryApplication.DoesNotExist:
-            return render(request, 'mashinani/progress_report.html', {'error_message': f'Bursary application with serial number "{serial_number}" not found.'})
+            return render(request, 'progress_report.html', {'error_message': f'Bursary application with serial number "{serial_number}" not found.'})
 
         report_data = {
             'student_details': {

@@ -124,7 +124,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # App-level static files
-APP_STATIC_ROOT = os.path.join(BASE_DIR, 'mashinani/static')
+APP_STATIC_ROOT = os.path.join(BASE_DIR, 'mashinani/static/')
 STATICFILES_DIRS = [APP_STATIC_ROOT]
 
 # Default primary key field type
