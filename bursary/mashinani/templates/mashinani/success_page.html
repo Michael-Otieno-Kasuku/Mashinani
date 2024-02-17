@@ -5,6 +5,6 @@
     <img src="{% static 'images/success_icon.png' %}" alt="Success Icon" class="success-icon">
     <h2 class="success-title">Application Submitted Successfully!</h2>
     <p class="serial-number">Your unique serial number is: {{ serial_number }}</p>
-    <a href="{% url 'landing_page' %}" class="return-button">Return to Home</a>
+    <a href="{% url 'mashinani:landing_page' %}" class="return-button">Return to Home</a>
 </div>
 {% endblock %}

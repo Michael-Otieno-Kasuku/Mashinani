@@ -3,7 +3,7 @@
 {% block content %}
 <div class="form-container">
     <h1 class="page-title">Bursary Application Form</h1>
-    <form method="post" action="{% url 'apply' %}">
+    <form method="post" action="{% url 'mashinani:apply' %}">
         {% csrf_token %}
 
         <!-- Personal Information Section -->
