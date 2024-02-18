@@ -8,6 +8,12 @@ class ApplicationForm(forms.ModelForm):
         label='Institution Name',
         widget=forms.Select(attrs={'class': 'blue-input-box'}),
     )
+    financial_year = forms.ModelChoiceField(
+        queryset=FinancialYear.objects.all(),
+        required=True,
+        label='Financial Year',
+        widget=forms.Select(attrs={'class': 'blue-input-box'}),
+    )
 
     class Meta:
         model = BursaryApplication
@@ -23,15 +29,17 @@ class ApplicationForm(forms.ModelForm):
             'national_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
             'registration_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
             'institution_account_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
-            'financial_year': forms.TextInput(attrs={'class': 'blue-input-box'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Correctly set the initial value based on the existing instance
-        if self.instance and hasattr(self.instance, 'institution') and self.instance.institution:
-            self.fields['institution_name'].initial = self.instance.institution.name
+        if self.instance and hasattr(self.instance, 'institution') and self.instance.institution_name:
+            self.fields['institution_name'].initial = self.instance.institution.institution_name
+        
+        if self.instance and hasattr(self.instance, 'financial_year' and self.instance.financial_year):
+            self.fields['financial_year'].initial = self.instance.financial_year.financial_year
 
 class ProgressTrackingForm(forms.Form):
     serial_number = forms.CharField(
