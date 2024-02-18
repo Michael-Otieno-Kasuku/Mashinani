@@ -1,5 +1,5 @@
 from django import forms
-from .models import BursaryApplication, Institution
+from .models import BursaryApplication, Institution, FinancialYear
 
 class ApplicationForm(forms.ModelForm):
     institution_name = forms.ModelChoiceField(
@@ -38,8 +38,6 @@ class ApplicationForm(forms.ModelForm):
         if self.instance and hasattr(self.instance, 'institution') and self.instance.institution_name:
             self.fields['institution_name'].initial = self.instance.institution.institution_name
         
-        if self.instance and hasattr(self.instance, 'financial_year' and self.instance.financial_year):
-            self.fields['financial_year'].initial = self.instance.financial_year.financial_year
 
 class ProgressTrackingForm(forms.Form):
     serial_number = forms.CharField(

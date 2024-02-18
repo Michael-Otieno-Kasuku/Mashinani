@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, VoterRegistration, StudentRegister
+from .models import BursaryApplication, VoterRegister, StudentRegister
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.pdfgen import canvas
@@ -36,7 +36,7 @@ class ApplicationFormView(View):
                 return render(request, self.template_name, {'form': form})
 
             # Check voter eligibility
-            if not VoterRegistration.objects.filter(national_id=national_id, constituency='Kisumu West').exists():
+            if not VoterRegister.objects.filter(national_id=national_id, constituency='Kisumu West').exists():
                 form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
                 return render(request, self.template_name, {'form': form})
 
