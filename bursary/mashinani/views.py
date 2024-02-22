@@ -32,7 +32,7 @@ class ApplicationFormView(View):
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
             # Check for existing application
-            if BursaryApplication.objects.filter(national_id_no=national_id_no, registration_number=registration_number, financial_year_id=financial_year_id).exists():
+            if BursaryApplication.objects.filter(national_id_no=national_id_no, registration_number=registration_number,constituency_id=constituency_id,institution_id=institution_id,account_number=account_number, financial_year_id=financial_year_id).exists():
                 form.add_error(None, "This National ID and Student Registration Number have already been used for this financial year.")
                 return render(request, self.template_name, {'form': form})
 
@@ -86,7 +86,6 @@ class ProgressReportView(View):
                 'national_id_no': bursary_application.national_id_no,
                 'registration_number': bursary_application.registration_number,
             },
-            'voter_id': bursary_application.voter_id,
             'institution_id': bursary_application.institution_id,
             'account_number': bursary_application.account_number,
             'constituency_id': bursary_application.constituency_id,
