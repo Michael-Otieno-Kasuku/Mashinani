@@ -10,19 +10,19 @@
         <div class="form-section">
             <h2>Personal Information</h2>
             <div class="form-field">
-                <label for="{{ form.voter_id.id_for_label }}" class="required">National ID Number:</label>
-                {{ form.voter_id }}
-                {{ form.voter_id.errors }}
+                <label for="{{ form.national_id_no.id_for_label }}" class="required">National ID Number:</label>
+                {{ form.national_id_no }}
+                {{ form.national_id_no.errors }}
             </div>
 
             <div class="form-field">
-                <label for="{{ form.student_id.id_for_label }}" class="required">Student Registration Number:</label>
-                {{ form.student_id }}
-                {{ form.student_id.errors }}
+                <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
+                {{ form.registration_number }}
+                {{ form.registration_number.errors }}
             </div>
 
             <div class="form-field">
-                <label for="{{ form.student_id.id_for_label }}" class="required">Constituency:</label>
+                <label for="{{ form.constituency_id.id_for_label }}" class="required">Constituency:</label>
                 {{ form.constituency_id }}
                 {{ form.constituency_id.errors }}
             </div>
@@ -39,9 +39,9 @@
             </div>
 
             <div class="form-field">
-                <label for="{{ form.account_id.id_for_label }}" class="required">Institution Account Number:</label>
-                {{ form.account_id }}
-                {{ form.account_id.errors }}
+                <label for="{{ form.account_number.id_for_label }}" class="required">Institution Account Number:</label>
+                {{ form.account_number }}
+                {{ form.account_number.errors }}
             </div>
         </div>
 

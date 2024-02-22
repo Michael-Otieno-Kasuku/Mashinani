@@ -25,23 +25,24 @@ class ApplicationFormView(View):
         form = ApplicationForm(request.POST)
 
         if form.is_valid():
-            voter_id = form.cleaned_data['voter_id']
-            student_id = form.cleaned_data['student_id']
-            financial_year_id = form.cleaned_data['financial_year_id']
+            national_id_no = form.cleaned_data['national_id_no']
+            registration_number = form.cleaned_data['registration_number']
+            constituency_id = form.cleaned_data['constituency_id']
             institution_id = form.cleaned_data['institution_id']
-
+            account_number = form.cleaned_data['account_number']
+            financial_year_id = form.cleaned_data['financial_year_id']
             # Check for existing application
-            if BursaryApplication.objects.filter(voter_id=voter_id, student_id=student_id, financial_year_id=financial_year_id).exists():
+            if BursaryApplication.objects.filter(national_id_no=national_id_no, registration_number=registration_number, financial_year_id=financial_year_id).exists():
                 form.add_error(None, "This National ID and Student Registration Number have already been used for this financial year.")
                 return render(request, self.template_name, {'form': form})
 
             # Check voter eligibility
-            if not Voter.objects.filter(voter_id=voter_id, constituency_id=constituency_id).exists():
+            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
                 form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
                 return render(request, self.template_name, {'form': form})
 
             # Check student registration
-            if not Student.objects.filter(institution_id=institution_id, student_id=student_id).exists():
+            if not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
                 form.add_error(None, "Student Registration Number does not exist in the current students register for the chosen institution.")
                 return render(request, self.template_name, {'form': form})
 

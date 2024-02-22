@@ -23,19 +23,19 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = BursaryApplication
-        fields = ['voter_id', 'student_id', 'institution_id', 'account_id','constituency_id', 'financial_year_id']
+        fields = ['national_id_no', 'registration_number', 'institution_id', 'account_number','constituency_id', 'financial_year_id']
         labels = {
-            'voter_id': 'National ID Number',
-            'student_id': 'Student Registration Number',
+            'national_id_no': 'National ID Number',
+            'registration_number': 'Student Registration Number',
             'institution_id': 'Institution Name',
-            'account_id': 'Institution Account Number',
+            'account_number': 'Institution Account Number',
             'constituency_id': 'Constituency',
             'financial_year_id': 'Financial Year',
         }
         widgets = {
-            'voter_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
-            'student_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
-            'account_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'national_id_no': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'registration_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'account_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
         }
 
     def __init__(self, *args, **kwargs):

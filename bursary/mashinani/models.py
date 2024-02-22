@@ -58,10 +58,10 @@ class FinancialYear(models.Model):
 
 class BursaryApplication(models.Model):
     bursary_application_id = models.AutoField(primary_key=True)
-    voter_id = models.ForeignKey(Voter, on_delete=models.CASCADE)
-    student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
+    national_id_no = models.CharField(max_length=200,help_text="Enter a valid National ID Number")
+    registration_number = models.CharField(max_length=200,help_text="Enter a valid Student Registration Number")
     institution_id = models.ForeignKey(Institution, on_delete=models.CASCADE)
-    account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    account_number = models.CharField(max_length=200, unique=True, help_text="Enter a valid Account Number")
     constituency_id = models.ForeignKey(Constituency, on_delete=models.CASCADE)
     financial_year_id = models.ForeignKey(FinancialYear, on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=200, unique=True, help_text="Auto-generated serial number")
