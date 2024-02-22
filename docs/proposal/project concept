@@ -3,13 +3,9 @@ Landing Page:
 User Onboarding:
 
     Users arrive at the Bursary Mashinani portal.
-    The landing page dynamically displays the current bursary application status for the ongoing financial year.
     Clear and prominent options are available:
         "Apply" (Blue Button): Initiates the bursary application process.
         "Track Progress" (Green Button): Allows users to monitor the status of their existing applications.
-        Engaging welcome message and a brief tutorial for first-time users for effective onboarding.
-        AI Enhancement: Implement an intelligent chatbot powered by natural language processing (NLP) to assist users in understanding the application process and provide personalized guidance.
-
 Apply for Bursary:
 
 User Interaction:
@@ -17,10 +13,7 @@ User Interaction:
     Clicking the "Apply" button seamlessly redirects users to the application page.
     A user-friendly form unfolds, starting with selecting the institution type from a dropdown adorned with a distinctive blue border.
     Users then proceed to a final page for entering comprehensive personal details.
-    Include progress indicators during the application process to inform users about the completion status.
-    Break down the application process into clear steps and highlight the current step.
-    AI Enhancement: Implement predictive typing and auto-suggestion to pre-fill certain form fields based on user data from previous applications or verified sources.
-
+    
 Personal Details Page:
 
 User Interaction:
