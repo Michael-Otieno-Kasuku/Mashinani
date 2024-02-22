@@ -82,8 +82,8 @@ class ProgressReportView(View):
 
         report_data = {
             'student_details': {
-                'National ID Number: ': bursary_application.voter_id,
-                'Student Registration Number: ': bursary_application.student_id,
+                'voter_id': bursary_application.voter_id,
+                'student_id': bursary_application.student_id,
             },
             'voter_id': bursary_application.voter_id,
             'institution_id': bursary_application.institution_id,
@@ -91,7 +91,7 @@ class ProgressReportView(View):
             'financial_year_id': bursary_application.financial_year_id,
             'serial_number': bursary_application.serial_number,
             'date_submitted': bursary_application.date_submitted,
-            'amount_disbursed': bursary_application.amount_disbursed
+            'amount_disbursed': bursary_application.amount_disbursed,
             'date_disbursed': bursary_application.date_disbursed,
         }
 
@@ -111,9 +111,10 @@ def generate_pdf(report_data):
     pdf_canvas.setFont("Helvetica", 12)
 
     # Add content to the PDF
-    pdf_canvas.drawString(100, 750, f"National ID Number: {report_data['student_details']['National ID Number']}")
-    pdf_canvas.drawString(100, 730, f"Student Registration Number: {report_data['student_details']['Student Registration Number']}")
-    pdf_canvas.drawString(100, 710, f"Constituency: {report_data['voter_id']}")
+    pdf_canvas.drawString(100, 770, f"BURSARY APPLICATION REPORT")
+    pdf_canvas.drawString(100, 750, f"National ID Number: {report_data['student_details']['voter_id']}")
+    pdf_canvas.drawString(100, 730, f"Student Registration Number: {report_data['student_details']['student_id']}")
+    pdf_canvas.drawString(100, 710, f"Constituency: {report_data['constituency_id']}")
     pdf_canvas.drawString(100, 690, f"Institution Name: {report_data['institution_id']}")
     pdf_canvas.drawString(100, 670, f"Account Number: {report_data['account_id']}")
     pdf_canvas.drawString(100, 650, f"Financial Year: {report_data['financial_year_id']}")
