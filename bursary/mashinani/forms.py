@@ -2,13 +2,13 @@ from django import forms
 from .models import BursaryApplication, Institution, FinancialYear
 
 class ApplicationForm(forms.ModelForm):
-    institution_name = forms.ModelChoiceField(
+    institution_id = forms.ModelChoiceField(
         queryset=Institution.objects.all(),
         required=True,
         label='Institution Name',
         widget=forms.Select(attrs={'class': 'blue-input-box'}),
     )
-    financial_year = forms.ModelChoiceField(
+    financial_year_id = forms.ModelChoiceField(
         queryset=FinancialYear.objects.all(),
         required=True,
         label='Financial Year',
@@ -17,26 +17,26 @@ class ApplicationForm(forms.ModelForm):
 
     class Meta:
         model = BursaryApplication
-        fields = ['national_id', 'registration_number', 'institution_name', 'institution_account_number', 'financial_year']
+        fields = ['voter_id', 'student_id', 'institution_id', 'account_id', 'financial_year_id']
         labels = {
-            'national_id': 'National ID Number',
-            'registration_number': 'Student Registration Number',
-            'institution_name': 'Institution',
-            'institution_account_number': 'Institution Account Number',
-            'financial_year': 'Financial Year',
+            'voter_id': 'National ID Number',
+            'student_id': 'Student Registration Number',
+            'institution_id': 'Institution Name',
+            'account_id': 'Institution Account Number',
+            'financial_year_id': 'Financial Year',
         }
         widgets = {
-            'national_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
-            'registration_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
-            'institution_account_number': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'voter_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'student_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
+            'account_id': forms.TextInput(attrs={'class': 'blue-input-box'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
         # Correctly set the initial value based on the existing instance
-        if self.instance and hasattr(self.instance, 'institution') and self.instance.institution_name:
-            self.fields['institution_name'].initial = self.instance.institution.institution_name
+        if self.instance and hasattr(self.instance, 'institution_id') and self.instance.institution_id:
+            self.fields['institution_id'].initial = self.instance.institution.institution_id
         
 
 class ProgressTrackingForm(forms.Form):
