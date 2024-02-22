@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, Voter, Student
+from .models import BursaryApplication, Voter, Student, Constituency
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.pdfgen import canvas

@@ -62,6 +62,7 @@ class BursaryApplication(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     institution_id = models.ForeignKey(Institution, on_delete=models.CASCADE)
     account_id = models.ForeignKey(Account, on_delete=models.CASCADE)
+    constituency_id = models.ForeignKey(Constituency, on_delete=models.CASCADE)
     financial_year_id = models.ForeignKey(FinancialYear, on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=200, unique=True, help_text="Auto-generated serial number")
     date_submitted = models.DateTimeField(auto_now_add=True, help_text="Date of submission")

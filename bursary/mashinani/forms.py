@@ -1,5 +1,5 @@
 from django import forms
-from .models import BursaryApplication, Institution, FinancialYear
+from .models import BursaryApplication, Institution, FinancialYear, Constituency
 
 class ApplicationForm(forms.ModelForm):
     institution_id = forms.ModelChoiceField(
@@ -14,15 +14,22 @@ class ApplicationForm(forms.ModelForm):
         label='Financial Year',
         widget=forms.Select(attrs={'class': 'blue-input-box'}),
     )
+    constituency_id = forms.ModelChoiceField(
+        queryset=Constituency.objects.all(),
+        required=True,
+        label='Constituency',
+        widget=forms.Select(attrs={'class': 'blue-input-box'}),
+    )
 
     class Meta:
         model = BursaryApplication
-        fields = ['voter_id', 'student_id', 'institution_id', 'account_id', 'financial_year_id']
+        fields = ['voter_id', 'student_id', 'institution_id', 'account_id','constituency_id', 'financial_year_id']
         labels = {
             'voter_id': 'National ID Number',
             'student_id': 'Student Registration Number',
             'institution_id': 'Institution Name',
             'account_id': 'Institution Account Number',
+            'constituency_id': 'Constituency',
             'financial_year_id': 'Financial Year',
         }
         widgets = {
