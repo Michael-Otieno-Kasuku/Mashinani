@@ -305,13 +305,31 @@ input[type="text"].invalid-input {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.error-container {
+    text-align: center;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f0f8ff; /* Light blue background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 .success-icon {
+    width: 80px;
+    height: 80px;
+}
+
+.error-icon {
     width: 80px;
     height: 80px;
 }
 
 .success-title {
     color: #0066cc; /* Dark blue color */
+}
+
+.error-title {
+    color: #f70511; /* Red color */
 }
 
 .serial-number {
