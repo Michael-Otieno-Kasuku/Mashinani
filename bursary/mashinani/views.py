@@ -78,7 +78,7 @@ class ProgressReportView(View):
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
         except BursaryApplication.DoesNotExist:
-            return render(request, 'progress_report.html', {'error_message': f'Bursary application with serial number "{serial_number}" not found.'})
+            return render(request, 'error_page.html')
 
         report_data = {
             'student_details': {
@@ -88,6 +88,7 @@ class ProgressReportView(View):
             'voter_id': bursary_application.voter_id,
             'institution_id': bursary_application.institution_id,
             'account_id': bursary_application.account_id,
+            'constituency_id': bursary_application.constituency_id,
             'financial_year_id': bursary_application.financial_year_id,
             'serial_number': bursary_application.serial_number,
             'date_submitted': bursary_application.date_submitted,
@@ -120,7 +121,7 @@ def generate_pdf(report_data):
     pdf_canvas.drawString(100, 650, f"Financial Year: {report_data['financial_year_id']}")
     pdf_canvas.drawString(100, 630, f"Serial Number: {report_data['serial_number']}")
     pdf_canvas.drawString(100, 610, f"Date Applied: {report_data['date_submitted']}")
-    pdf_canvas.drawString(100, 590, f"Amount Disbursed: {report_data['amount_disbursed']}")
+    pdf_canvas.drawString(100, 590, f"Amount Disbursed: Ksh. {report_data['amount_disbursed']}")
     pdf_canvas.drawString(100, 570, f"Date Disbursed: {report_data['date_disbursed']}")
 
     # Save the PDF file
