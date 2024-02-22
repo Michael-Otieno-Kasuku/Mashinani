@@ -31,19 +31,19 @@ class ApplicationFormView(View):
             institution_id = form.cleaned_data['institution_id']
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
-            # Check for existing application
-            if BursaryApplication.objects.filter(national_id_no=national_id_no, registration_number=registration_number,constituency_id=constituency_id,institution_id=institution_id,account_number=account_number, financial_year_id=financial_year_id).exists():
-                form.add_error(None, "This National ID and Student Registration Number have already been used for this financial year.")
+            # Check for existing application based on the id number i.e you can only apply once in every financial year
+            if BursaryApplication.objects.filter(national_id_no=national_id_no,financial_year_id=financial_year_id).exists():
+                form.add_error(None, "This National ID Number has already been used to apply in this financial year.")
                 return render(request, self.template_name, {'form': form})
 
-            # Check voter eligibility
-            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
+            # Check voter eligibility based on the id number and constituency i.e you can only apply if your're a voter in Kisumu West
+            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id="Kisumu West").exists():
                 form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
                 return render(request, self.template_name, {'form': form})
 
-            # Check student registration
+            # Check student registration i.e if the applicant is indeed a student of the given institution based on the reg no and institution id
             if not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
-                form.add_error(None, "Student Registration Number does not exist in the current students register for the chosen institution.")
+                form.add_error(None, "The Registration Number provided does not exist in the current students register for the chosen institution.")
                 return render(request, self.template_name, {'form': form})
 
             # Generate serial number
