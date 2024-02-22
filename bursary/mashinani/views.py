@@ -47,7 +47,7 @@ class ApplicationFormView(View):
                 return render(request, self.template_name, {'form': form})
 
             # Generate serial number
-            serial_number = generate_serial_number(voter_id, student_id, financial_year_id, institution_id)
+            serial_number = generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id)
 
             # Save the application
             bursary_application = form.save(commit=False)
@@ -63,8 +63,8 @@ class SuccessPageView(View):
         serial_number = self.kwargs.get('serial_number', None)
         return render(request, 'success_page.html', {'serial_number': serial_number})
 
-def generate_serial_number(voter_id, student_id, financial_year_id, institution_id):
-    data_string = f"{voter_id}-{student_id}-{financial_year_id}-{institution_id}"
+def generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id):
+    data_string = f"{national_id_no}-{registration_number}-{financial_year_id}-{institution_id}"
     unique_identifier = str(uuid.uuid4())
     combined_string = f"{data_string}-{unique_identifier}"
     serial_number = hashlib.md5(combined_string.encode()).hexdigest()
@@ -83,12 +83,12 @@ class ProgressReportView(View):
 
         report_data = {
             'student_details': {
-                'voter_id': bursary_application.voter_id,
-                'student_id': bursary_application.student_id,
+                'national_id_no': bursary_application.national_id_no,
+                'registration_number': bursary_application.registration_number,
             },
             'voter_id': bursary_application.voter_id,
             'institution_id': bursary_application.institution_id,
-            'account_id': bursary_application.account_id,
+            'account_number': bursary_application.account_number,
             'constituency_id': bursary_application.constituency_id,
             'financial_year_id': bursary_application.financial_year_id,
             'serial_number': bursary_application.serial_number,
@@ -114,11 +114,11 @@ def generate_pdf(report_data):
 
     # Add content to the PDF
     pdf_canvas.drawString(100, 770, f"BURSARY APPLICATION REPORT")
-    pdf_canvas.drawString(100, 750, f"National ID Number: {report_data['student_details']['voter_id']}")
-    pdf_canvas.drawString(100, 730, f"Student Registration Number: {report_data['student_details']['student_id']}")
+    pdf_canvas.drawString(100, 750, f"National ID Number: {report_data['student_details']['national_id_no']}")
+    pdf_canvas.drawString(100, 730, f"Student Registration Number: {report_data['student_details']['registration_number']}")
     pdf_canvas.drawString(100, 710, f"Constituency: {report_data['constituency_id']}")
     pdf_canvas.drawString(100, 690, f"Institution Name: {report_data['institution_id']}")
-    pdf_canvas.drawString(100, 670, f"Account Number: {report_data['account_id']}")
+    pdf_canvas.drawString(100, 670, f"Account Number: {report_data['account_number']}")
     pdf_canvas.drawString(100, 650, f"Financial Year: {report_data['financial_year_id']}")
     pdf_canvas.drawString(100, 630, f"Serial Number: {report_data['serial_number']}")
     pdf_canvas.drawString(100, 610, f"Date Applied: {report_data['date_submitted']}")
