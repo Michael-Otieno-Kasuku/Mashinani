@@ -37,7 +37,7 @@ class ApplicationFormView(View):
                 return render(request, self.template_name, {'form': form})
 
             # Check voter eligibility based on the id number and constituency i.e you can only apply if your're a voter in Kisumu West
-            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id="Kisumu West").exists():
+            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=1).exists():
                 form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
                 return render(request, self.template_name, {'form': form})
 
