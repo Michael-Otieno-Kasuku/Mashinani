@@ -10,15 +10,15 @@
         <div class="form-section">
             <h2>Personal Information</h2>
             <div class="form-field">
-                <label for="{{ form.national_id.id_for_label }}" class="required">National ID Number:</label>
-                {{ form.national_id }}
-                {{ form.national_id.errors }}
+                <label for="{{ form.voter_id.id_for_label }}" class="required">National ID Number:</label>
+                {{ form.voter_id }}
+                {{ form.voter_id.errors }}
             </div>
 
             <div class="form-field">
-                <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
-                {{ form.registration_number }}
-                {{ form.registration_number.errors }}
+                <label for="{{ form.student_id.id_for_label }}" class="required">Student Registration Number:</label>
+                {{ form.student_id }}
+                {{ form.student_id.errors }}
             </div>
         </div>
 
@@ -26,15 +26,15 @@
         <div class="form-section">
             <h2>Institution Information</h2>
             <div class="form-field">
-                <label for="{{ form.institution_name.id_for_label }}" class="required">Institution:</label>
-                {{ form.institution_name }}
-                {{ form.institution_name.errors }}
+                <label for="{{ form.institution_id.id_for_label }}" class="required">Institution Name:</label>
+                {{ form.institution_id }}
+                {{ form.institution_id.errors }}
             </div>
 
             <div class="form-field">
-                <label for="{{ form.institution_account_number.id_for_label }}" class="required">Institution Account Number:</label>
-                {{ form.institution_account_number }}
-                {{ form.institution_account_number.errors }}
+                <label for="{{ form.account_id.id_for_label }}" class="required">Institution Account Number:</label>
+                {{ form.account_id }}
+                {{ form.account_id.errors }}
             </div>
         </div>
 
@@ -42,9 +42,9 @@
         <div class="form-section">
             <h2>Financial Information</h2>
             <div class="form-field">
-                <label for="{{ form.financial_year.id_for_label }}" class="required">Financial Year:</label>
-                {{ form.financial_year }}
-                {{ form.financial_year.errors }}
+                <label for="{{ form.financial_year_id.id_for_label }}" class="required">Current Financial Year:</label>
+                {{ form.financial_year_id }}
+                {{ form.financial_year_id.errors }}
             </div>
         </div>
 
