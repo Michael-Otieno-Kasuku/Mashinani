@@ -1,5 +1,3 @@
-# views.py
-
 import hashlib
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect
@@ -51,6 +49,11 @@ class ApplicationFormView(View):
             if not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
                 form.add_error(None, "The Registration Number provided does not exist in the current students register for the chosen institution.")
                 return render(request, self.template_name, {'form': form})
+            
+            # Check if the provided account number is correct i.e the account number provided should belong to that particular institution that the user entered
+            if not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
+                form.add_error(None, "The account number provided is incorrect!")
+                return render(request, self.template_name, {'form': form})
 
             # Generate serial number
             serial_number = generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id)
@@ -77,7 +80,6 @@ class ApplicationFormView(View):
 
             # Evaluate the model for amount disbursed
             mae_amount = mean_absolute_error(y_amount_test, amount_predictions)
-            print(f'Mean Absolute Error for Amount Disbursed: {mae_amount}')
 
             # Linear Regression for approval timelines
             model_timeline = LinearRegression()
@@ -86,7 +88,6 @@ class ApplicationFormView(View):
 
             # Evaluate the model for approval timelines
             mae_timeline = mean_absolute_error(y_timeline_test, timeline_predictions)
-            print(f'Mean Absolute Error for Approval Timelines: {mae_timeline}')
 
             return redirect('success_page', serial_number=serial_number)
         else:
