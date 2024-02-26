@@ -89,7 +89,7 @@ class ProgressReportView(View):
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
-
+                
         report_data = {
             'student_details': {
                 'national_id_no': bursary_application.national_id_no,
@@ -102,7 +102,6 @@ class ProgressReportView(View):
             'serial_number': bursary_application.serial_number,
             'date_submitted': bursary_application.date_submitted,
             'amount_disbursed': bursary_application.amount_disbursed,
-            'date_disbursed': bursary_application.date_disbursed,
         }
 
         # Generate PDF
