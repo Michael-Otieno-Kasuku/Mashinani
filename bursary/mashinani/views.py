@@ -9,9 +9,6 @@ from django.conf import settings
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error
 
 class LandingPageView(View):
     def get(self, request):
@@ -102,6 +99,7 @@ class ProgressReportView(View):
             'serial_number': bursary_application.serial_number,
             'date_submitted': bursary_application.date_submitted,
             'amount_disbursed': bursary_application.amount_disbursed,
+            'date_disbursed': bursary_application.date_disbursed,
         }
 
         # Generate PDF
