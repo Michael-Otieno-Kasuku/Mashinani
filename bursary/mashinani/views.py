@@ -1,3 +1,5 @@
+# views.py
+
 import hashlib
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect
@@ -9,6 +11,9 @@ from django.conf import settings
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from io import BytesIO
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error
 
 class LandingPageView(View):
     def get(self, request):
@@ -31,12 +36,13 @@ class ApplicationFormView(View):
             institution_id = form.cleaned_data['institution_id']
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
+            
             # Check for existing application based on the id number i.e you can only apply once in every financial year
-            if BursaryApplication.objects.filter(national_id_no=national_id_no,financial_year_id=financial_year_id).exists():
+            if BursaryApplication.objects.filter(national_id_no=national_id_no, financial_year_id=financial_year_id).exists():
                 form.add_error(None, "This National ID Number has already been used to apply in this financial year.")
                 return render(request, self.template_name, {'form': form})
 
-            # Check voter eligibility based on the id number and constituency i.e you can only apply if your're a voter in Kisumu West
+            # Check voter eligibility based on the id number and constituency i.e you can only apply if you're a voter in Kisumu West
             if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=1).exists():
                 form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
                 return render(request, self.template_name, {'form': form})
@@ -53,6 +59,34 @@ class ApplicationFormView(View):
             bursary_application = form.save(commit=False)
             bursary_application.serial_number = serial_number
             bursary_application.save()
+
+            # Feature selection and model training
+            features = ['institution_id', 'constituency_id', 'financial_year_id', 'date_submitted']
+            X = BursaryApplication.objects.values(*features)
+            y_amount = BursaryApplication.objects.values_list('amount_disbursed', flat=True)
+            y_timeline = BursaryApplication.objects.values_list('date_disbursed', flat=True)
+
+            X_train, X_test, y_amount_train, y_amount_test, y_timeline_train, y_timeline_test = train_test_split(
+                X, y_amount, y_timeline, test_size=0.2, random_state=42
+            )
+
+            # Linear Regression for amount disbursed
+            model_amount = LinearRegression()
+            model_amount.fit(X_train, y_amount_train)
+            amount_predictions = model_amount.predict(X_test)
+
+            # Evaluate the model for amount disbursed
+            mae_amount = mean_absolute_error(y_amount_test, amount_predictions)
+            print(f'Mean Absolute Error for Amount Disbursed: {mae_amount}')
+
+            # Linear Regression for approval timelines
+            model_timeline = LinearRegression()
+            model_timeline.fit(X_train, y_timeline_train)
+            timeline_predictions = model_timeline.predict(X_test)
+
+            # Evaluate the model for approval timelines
+            mae_timeline = mean_absolute_error(y_timeline_test, timeline_predictions)
+            print(f'Mean Absolute Error for Approval Timelines: {mae_timeline}')
 
             return redirect('success_page', serial_number=serial_number)
         else:
