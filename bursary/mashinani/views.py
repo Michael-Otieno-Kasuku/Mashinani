@@ -6,8 +6,11 @@ from .forms import ApplicationForm
 from .models import BursaryApplication, Voter, Student, Constituency,Account,Bank
 from django.http import HttpResponse
 from django.conf import settings
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
+from reportlab.lib.units import inch
 from io import BytesIO
 
 class LandingPageView(View):
@@ -123,31 +126,67 @@ class ProgressReportView(View):
 
 def generate_pdf(report_data):
     buffer = BytesIO()
-    pdf_canvas = canvas.Canvas(buffer, pagesize=letter)
+    pdf_canvas = SimpleDocTemplate(buffer, pagesize = landscape(letter))
 
-    # Set font and size
-    pdf_canvas.setFont("Helvetica", 12)
+    #Define table data
+    table_data = [
+        ["BURSARY APPLICATION REPORT"],
+        ["SECTION A: Student Details"],
+        ["First Name:", report_data['student_details']['first_name']],
+        ["Last Name:", report_data['student_details']['last_name']],
+        ["National ID Number:", report_data['student_details']['national_id_no']],
+        ["Registration Number:", report_data['student_details']['registration_number']],
+        ["Institution Name:", report_data['student_details']['institution_id']],
+        ["Constituency Name:", report_data['student_details']['constituency_id']],
+        ["SECTION B: Institution Bank Details"],
+        ["Bank Name:", report_data['account_details']['bank_name']],
+        ["Institution Bank Account Number:", report_data['account_details']['account_number']],
+        ['SECTION C: Application Details'],
+        ["Application Serial Number:", report_data['application_details']['serial_number']],
+        ["Financial Year:", report_data['application_details']['financial_year_id']],
+        ["Date Applied:", report_data['application_details']['date_submitted']],
+        ["SECTION D: Disbursement Details"],
+        ["Amount Disbursed(Ksh.): ", report_data['disbursement_details']['amount_disbursed']],
+        ["Date Disbursed:", report_data['disbursement_details']['date_disbursed']],
+    ]
+    
+    #Create a table
+    table = Table(table_data)
 
-    # Add content to the PDF
-    pdf_canvas.drawString(100, 770, f"BURSARY APPLICATION REPORT")
-    pdf_canvas.drawString(100, 750, f"First Name: {report_data['student_details']['first_name']}")
-    pdf_canvas.drawString(100, 730, f"Last Name: {report_data['student_details']['last_name']}")
-    pdf_canvas.drawString(100, 710, f"National ID Number: {report_data['student_details']['national_id_no']}")
-    pdf_canvas.drawString(100, 690, f"Registration Number: {report_data['student_details']['registration_number']}")
-    pdf_canvas.drawString(100, 670, f"Institution Name: {report_data['student_details']['institution_id']}")
-    pdf_canvas.drawString(100, 650, f"Constituency: {report_data['student_details']['constituency_id']}")
-    pdf_canvas.drawString(100, 630, f"Institution Bank Name: {report_data['account_details']['bank_name']}")
-    pdf_canvas.drawString(100, 610, f"Institution Bank Account Number: {report_data['account_details']['account_number']}")
-    pdf_canvas.drawString(100, 590, f"Application Serial Number: {report_data['application_details']['serial_number']}")
-    pdf_canvas.drawString(100, 570, f"Financial Year: {report_data['application_details']['financial_year_id']}")
-    pdf_canvas.drawString(100, 550, f"Date of Applied: {report_data['application_details']['date_submitted']}")
-    pdf_canvas.drawString(100, 530, f"Amount Disbursed: Ksh. {report_data['disbursement_details']['amount_disbursed']}")
-    pdf_canvas.drawString(100, 510, f"Date Disbursed: {report_data['disbursement_details']['date_disbursed']}")
+    #Set the table style
+    # Set table style
+    style = TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # Header background color
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Content background color
+                        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                        ('FONTSIZE', (0, 0), (-1, -1), 12),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ('TOPPADDING', (0, 0), (-1, -1), 5),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                        ('SPAN', (0, 0), (1, 0)),  # Merge cells for the heading
+                        ])
+
+    table.setStyle(style)
+
+    # Add page border
+    frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, colors.black)])
+    table.setStyle(frame_styling)
+
+    # Add table to the PDF
+    elements = [table]
+
+    # Add space after table
+    elements.append(Spacer(1, 0.25 * inch))
+
+    # Build PDF
+    pdf_canvas.build(elements)
+
     # Save the PDF file
-    pdf_canvas.save()
-
-    # Get the value of the BytesIO buffer and reset the buffer position
     pdf_bytes = buffer.getvalue()
-    buffer.seek(0)
+    buffer.close()
 
     return pdf_bytes
