@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, Voter, Student, Constituency,Account
+from .models import BursaryApplication, Voter, Student, Constituency,Account,Bank
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.pdfgen import canvas
@@ -84,8 +84,8 @@ class ProgressReportView(View):
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
-            student = Student.objects.get(bursary_application.registration_number)
-            bank = Bank.objects.get(bursary_application.account_number)
+            student = Student.objects.get(registration_number=bursary_application.registration_number)
+            account = Account.objects.get(account_number=bursary_application.account_number)
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
                 
@@ -99,7 +99,7 @@ class ProgressReportView(View):
                 'constituency_id': bursary_application.constituency_id,
             },
             'account_details':{
-                'bank_name':bank.bank_name,
+                'bank_name':account.bank_id,
                 'account_number': bursary_application.account_number,
             },
             'application_details':{
@@ -139,7 +139,7 @@ def generate_pdf(report_data):
     pdf_canvas.drawString(100, 630, f"Institution Bank Name: {report_data['account_details']['bank_name']}")
     pdf_canvas.drawString(100, 610, f"Institution Bank Account Number: {report_data['account_details']['account_number']}")
     pdf_canvas.drawString(100, 590, f"Application Serial Number: {report_data['application_details']['serial_number']}")
-    pdf_canvas.drawString(100, 570, f"Financial Year: {report_data['application_details']['financial_year']}")
+    pdf_canvas.drawString(100, 570, f"Financial Year: {report_data['application_details']['financial_year_id']}")
     pdf_canvas.drawString(100, 550, f"Date of Applied: {report_data['application_details']['date_submitted']}")
     pdf_canvas.drawString(100, 530, f"Amount Disbursed: Ksh. {report_data['disbursement_details']['amount_disbursed']}")
     pdf_canvas.drawString(100, 510, f"Date Disbursed: {report_data['disbursement_details']['date_disbursed']}")
