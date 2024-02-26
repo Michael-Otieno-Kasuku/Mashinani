@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, Voter, Student, Constituency
+from .models import BursaryApplication, Voter, Student, Constituency,Account
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.pdfgen import canvas
@@ -62,32 +62,6 @@ class ApplicationFormView(View):
             bursary_application = form.save(commit=False)
             bursary_application.serial_number = serial_number
             bursary_application.save()
-
-            # Feature selection and model training
-            features = ['institution_id', 'constituency_id', 'financial_year_id', 'date_submitted']
-            X = BursaryApplication.objects.values(*features)
-            y_amount = BursaryApplication.objects.values_list('amount_disbursed', flat=True)
-            y_timeline = BursaryApplication.objects.values_list('date_disbursed', flat=True)
-
-            X_train, X_test, y_amount_train, y_amount_test, y_timeline_train, y_timeline_test = train_test_split(
-                X, y_amount, y_timeline, test_size=0.2, random_state=42
-            )
-
-            # Linear Regression for amount disbursed
-            model_amount = LinearRegression()
-            model_amount.fit(X_train, y_amount_train)
-            amount_predictions = model_amount.predict(X_test)
-
-            # Evaluate the model for amount disbursed
-            mae_amount = mean_absolute_error(y_amount_test, amount_predictions)
-
-            # Linear Regression for approval timelines
-            model_timeline = LinearRegression()
-            model_timeline.fit(X_train, y_timeline_train)
-            timeline_predictions = model_timeline.predict(X_test)
-
-            # Evaluate the model for approval timelines
-            mae_timeline = mean_absolute_error(y_timeline_test, timeline_predictions)
 
             return redirect('success_page', serial_number=serial_number)
         else:
