@@ -84,22 +84,33 @@ class ProgressReportView(View):
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
+            student = Student.objects.get(bursary_application.registration_number)
+            bank = Bank.objects.get(bursary_application.account_number)
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
                 
         report_data = {
             'student_details': {
+                'first_name':student.first_name,
+                'last_name':student.last_name,
                 'national_id_no': bursary_application.national_id_no,
                 'registration_number': bursary_application.registration_number,
+                'institution_id': bursary_application.institution_id,
+                'constituency_id': bursary_application.constituency_id,
             },
-            'institution_id': bursary_application.institution_id,
-            'account_number': bursary_application.account_number,
-            'constituency_id': bursary_application.constituency_id,
-            'financial_year_id': bursary_application.financial_year_id,
-            'serial_number': bursary_application.serial_number,
-            'date_submitted': bursary_application.date_submitted,
-            'amount_disbursed': bursary_application.amount_disbursed,
-            'date_disbursed': bursary_application.date_disbursed,
+            'account_details':{
+                'bank_name':bank.bank_name,
+                'account_number': bursary_application.account_number,
+            },
+            'application_details':{
+                'serial_number': bursary_application.serial_number,
+                'financial_year_id': bursary_application.financial_year_id,
+                'date_submitted': bursary_application.date_submitted,
+            },
+            'disbursement_details':{
+                'amount_disbursed': bursary_application.amount_disbursed,
+                'date_disbursed': bursary_application.date_disbursed,
+            },
         }
 
         # Generate PDF
@@ -119,17 +130,19 @@ def generate_pdf(report_data):
 
     # Add content to the PDF
     pdf_canvas.drawString(100, 770, f"BURSARY APPLICATION REPORT")
-    pdf_canvas.drawString(100, 750, f"National ID Number: {report_data['student_details']['national_id_no']}")
-    pdf_canvas.drawString(100, 730, f"Student Registration Number: {report_data['student_details']['registration_number']}")
-    pdf_canvas.drawString(100, 710, f"Constituency: {report_data['constituency_id']}")
-    pdf_canvas.drawString(100, 690, f"Institution Name: {report_data['institution_id']}")
-    pdf_canvas.drawString(100, 670, f"Account Number: {report_data['account_number']}")
-    pdf_canvas.drawString(100, 650, f"Financial Year: {report_data['financial_year_id']}")
-    pdf_canvas.drawString(100, 630, f"Serial Number: {report_data['serial_number']}")
-    pdf_canvas.drawString(100, 610, f"Date Applied: {report_data['date_submitted']}")
-    pdf_canvas.drawString(100, 590, f"Amount Disbursed: Ksh. {report_data['amount_disbursed']}")
-    pdf_canvas.drawString(100, 570, f"Date Disbursed: {report_data['date_disbursed']}")
-
+    pdf_canvas.drawString(100, 750, f"First Name: {report_data['student_details']['first_name']}")
+    pdf_canvas.drawString(100, 730, f"Last Name: {report_data['student_details']['last_name']}")
+    pdf_canvas.drawString(100, 710, f"National ID Number: {report_data['student_details']['national_id_no']}")
+    pdf_canvas.drawString(100, 690, f"Registration Number: {report_data['student_details']['registration_number']}")
+    pdf_canvas.drawString(100, 670, f"Institution Name: {report_data['student_details']['institution_id']}")
+    pdf_canvas.drawString(100, 650, f"Constituency: {report_data['student_details']['constituency_id']}")
+    pdf_canvas.drawString(100, 630, f"Institution Bank Name: {report_data['account_details']['bank_name']}")
+    pdf_canvas.drawString(100, 610, f"Institution Bank Account Number: {report_data['account_details']['account_number']}")
+    pdf_canvas.drawString(100, 590, f"Application Serial Number: {report_data['application_details']['serial_number']}")
+    pdf_canvas.drawString(100, 570, f"Financial Year: {report_data['application_details']['financial_year']}")
+    pdf_canvas.drawString(100, 550, f"Date of Applied: {report_data['application_details']['date_submitted']}")
+    pdf_canvas.drawString(100, 530, f"Amount Disbursed: Ksh. {report_data['disbursement_details']['amount_disbursed']}")
+    pdf_canvas.drawString(100, 510, f"Date Disbursed: {report_data['disbursement_details']['date_disbursed']}")
     # Save the PDF file
     pdf_canvas.save()
 
