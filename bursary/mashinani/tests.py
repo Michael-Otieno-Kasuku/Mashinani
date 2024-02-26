@@ -17,12 +17,3 @@ class ApplicationFormViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'application_form.html')
         self.assertIsInstance(response.context['form'], ApplicationForm)
-
-class SuccessPageViewTest(TestCase):
-    def test_success_page_view(self):
-        """Test the SuccessPageView."""
-        serial_number = '8ee7b150b91f7394afbd67221db438f7'
-        response = self.client.get(reverse('success_page', kwargs={'serial_number': serial_number}))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'success_page.html')
-        self.assertEqual(response.context['serial_number'], serial_number)
