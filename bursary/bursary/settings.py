@@ -2,21 +2,17 @@
 
 from pathlib import Path
 import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%l$-a5r04#hpo0*z9!+be%_=zl=ff+0i6(uh%ha-b89rvlg%p^'
+SECRET_KEY = 'your-secret-key-here'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']  # Update this with your actual domain in production.
+ALLOWED_HOSTS = ['your-elastic-beanstalk-environment-url']
 
 # Application definition
 INSTALLED_APPS = [
@@ -62,9 +58,14 @@ WSGI_APPLICATION = 'bursary.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', 'postgres://kasuku:Student2023@Mmust@localhost:5432/mashinanidev')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'your_db_name',
+        'USER': 'your_db_username',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'your-rds-endpoint.amazonaws.com',
+        'PORT': '5432',
+    }
 }
 
 # Password validation
