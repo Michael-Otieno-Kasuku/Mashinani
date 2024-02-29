@@ -35,25 +35,29 @@ class ApplicationFormView(View):
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
             
-            # Check for existing application based on the id number i.e you can only apply once in every financial year
+            # Check for existing application based on the id number and financial year i.e you can only apply once in every financial year
             if BursaryApplication.objects.filter(national_id_no=national_id_no, financial_year_id=financial_year_id).exists():
-                form.add_error(None, "This National ID Number has already been used to apply in this financial year.")
+                form.add_error(None, "You have already applied bursary for this financial year!")
                 return render(request, self.template_name, {'form': form})
-
-            # Check voter eligibility based on the id number and constituency i.e you can only apply if you're a voter in Kisumu West
-            #Make sure that only a person from Kisumu West can apply and if the any of the value entered in the fields is incorrect the system should display an appropriate erro message in the form
-            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=1).exists():
-                form.add_error(None, "You are not eligible as a voter in Kisumu West Constituency.")
+            
+            #Check if the id number provided is indeed belongs to that particular student
+            if not Student.objects.filter(national_id_no=national_id_no,registration_number=registration_number).exists():
+                form.add_error(None, "You have provided a wrong registration number or national id number!")
                 return render(request, self.template_name, {'form': form})
-
+            
             # Check student registration i.e if the applicant is indeed a student of the given institution based on the reg no and institution id
             if not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
-                form.add_error(None, "The Registration Number provided does not exist in the current students register for the chosen institution.")
+                form.add_error(None, "You have chosen a wrong institution or you have provided a wrong registration number!")
+                return render(request, self.template_name, {'form': form})
+
+            # Check voter eligibility based on the id number and constituency i.e you can only apply if you're a voter in Kisumu West, that is Kisumu West is the only Constituency that is in  the system
+            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
+                form.add_error(None, "You have entered a wrong national id number or you have entered a wrong constituency name!")
                 return render(request, self.template_name, {'form': form})
             
             # Check if the provided account number is correct i.e the account number provided should belong to that particular institution that the user entered
             if not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
-                form.add_error(None, "The account number provided is incorrect!")
+                form.add_error(None, "You have entered a wrong accounter number or you have chosen the wrong institution")
                 return render(request, self.template_name, {'form': form})
 
             # Generate serial number

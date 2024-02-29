@@ -40,7 +40,7 @@ class Voter(models.Model):
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
-    voter_id = models.ForeignKey(Voter, on_delete=models.CASCADE)
+    national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")
     institution_id = models.ForeignKey(Institution, on_delete=models.CASCADE)
     registration_number = models.CharField(max_length=200, unique=True, help_text="Enter a valid Student Registration Number")
     first_name = models.CharField(max_length=255, help_text="Enter the first name")

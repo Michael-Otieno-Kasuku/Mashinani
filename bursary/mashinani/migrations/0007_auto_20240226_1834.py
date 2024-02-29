@@ -9,7 +9,6 @@ def insert_students(apps, schema_editor):
     Institution = apps.get_model('mashinani', 'Institution')
 
     # Fetching existing voters and institutions data
-    voters = Voter.objects.all()
     institutions = Institution.objects.all()
 
     first_names = ['John', 'Jane', 'Mary', 'Peter', 'Alice', 'David', 'Grace', 'Kevin', 'Mercy', 'Brian']
@@ -19,7 +18,7 @@ def insert_students(apps, schema_editor):
 
     for i in range(50):
         student_data = {
-            'voter_id': random.choice(voters),
+            'national_id_no': '1{:07}'.format(i),
             'institution_id': random.choice(institutions),
             'registration_number': 'STU{:03}'.format(i + 1),
             'first_name': random.choice(first_names),
