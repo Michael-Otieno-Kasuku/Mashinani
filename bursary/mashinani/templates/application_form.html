@@ -85,4 +85,20 @@
     }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var firstErrorField = document.querySelector('.has-error input');
+        if (firstErrorField) {
+            // Scroll to the first error field
+            firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Display the error message associated with the first error field
+            var errorContainer = firstErrorField.parentElement.querySelector('.error-message');
+            if (errorContainer) {
+                errorContainer.style.display = 'block';
+            }
+        }
+    });
+</script>
+
 {% endblock %}
