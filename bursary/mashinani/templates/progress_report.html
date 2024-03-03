@@ -6,10 +6,10 @@
 <form method="post" action="{% url 'progress_report' %}" class="report-form">
     {% csrf_token %}
     <label for="serial_number">Serial Number:</label>
-    <input type="text" name="serial_number" class="serial-input" required>
+    <input type="text" name="serial_number" class="serial-input" required placeholder="Enter Serial Number">
     <div class="button-container">
-<button type="submit" class="generate-button">Generate Report</button>
-<a href="{% url 'landing_page' %}" class="return-button">Return to Home</a>
+    <button type="submit" class="generate-button">Generate Report</button>
+    <a href="{% url 'landing_page' %}" class="return-button">Return to Home</a>
     </div>
 </form>
 {% endblock %}
