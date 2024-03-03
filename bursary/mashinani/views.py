@@ -19,7 +19,7 @@ class LandingPageView(View):
 
 class ApplicationFormView(View):
     template_name = 'application_form.html'
-    
+
     def get(self, request):
         form = ApplicationForm()
         return render(request, self.template_name, {'form': form})
@@ -35,42 +35,43 @@ class ApplicationFormView(View):
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
             
-            # REQ-1: Check for existing application based on the id number and financial year i.e you can only apply once in every financial year
+            # REQ-1: Check for existing application based on the id number and financial year
             if BursaryApplication.objects.filter(national_id_no=national_id_no, financial_year_id=financial_year_id).exists():
                 form.add_error(None, "You have already applied bursary for this financial year!")
-                return render(request, self.template_name, {'form': form})
-            
-            # REQ-2: Check if the id number provided is indeed belongs to that particular student
-            if not Student.objects.filter(national_id_no=national_id_no,registration_number=registration_number).exists():
+
+            # REQ-2: Check if the id number provided belongs to that student
+            elif not Student.objects.filter(national_id_no=national_id_no, registration_number=registration_number).exists():
                 form.add_error(None, "You have provided a wrong registration number or national id number!")
-                return render(request, self.template_name, {'form': form})
-            
-            # REQ-3: Check student registration i.e if the applicant is indeed a student of the given institution based on the reg no and institution id
-            if not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
-                form.add_error(None, "You have chosen a wrong institution or you have provided a wrong registration number!")
-                return render(request, self.template_name, {'form': form})
 
-            # REQ-4 Check voter eligibility based on the id number and constituency i.e you can only apply if you are a voter in the chosen constituency
-            if not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
-                form.add_error(None, "You have entered a wrong national id number or you have entered a wrong constituency name!")
-                return render(request, self.template_name, {'form': form})
-            
-            # REQ-5 Check if the provided account number is correct i.e the account number provided should belong to that particular institution that the user entered
-            if not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
-                form.add_error(None, "You have entered a wrong accounter number or you have chosen the wrong institution")
-                return render(request, self.template_name, {'form': form})
+            # REQ-3: Check student registration, i.e., if the applicant is a student of the given institution
+            elif not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
+                form.add_error(None, "You have chosen the wrong institution or provided a wrong registration number!")
 
-            # Generate serial number
-            serial_number = generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id)
+            # REQ-4 Check voter eligibility based on the id number and constituency
+            elif not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
+                form.add_error(None, "You have entered a wrong national id number or constituency name!")
 
-            # Save the application
-            bursary_application = form.save(commit=False)
-            bursary_application.serial_number = serial_number
-            bursary_application.save()
+            # REQ-5 Check if the provided account number is correct
+            elif not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
+                form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
 
-            return redirect('success_page', serial_number=serial_number)
-        else:
+            else:
+                # Generate serial number
+                serial_number = generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id)
+
+                # Save the application
+                bursary_application = form.save(commit=False)
+                bursary_application.serial_number = serial_number
+                bursary_application.save()
+
+                return redirect('success_page', serial_number=serial_number)
+
+            # If there are errors, render the template with the form and errors
             return render(request, self.template_name, {'form': form})
+        else:
+            # If the form is not valid, render the template with the form and errors
+            return render(request, self.template_name, {'form': form})
+
 
 class SuccessPageView(View):
     def get(self, request, *args, **kwargs):

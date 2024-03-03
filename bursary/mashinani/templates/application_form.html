@@ -1,77 +1,88 @@
-    {% extends 'base.html' %}
+{% extends 'base.html' %}
 
-    {% block content %}
-    <div class="form-container">
-        <h1 class="page-title">Bursary Application Form</h1>
-        <form method="post" action="{% url 'apply' %}" id="bursaryForm">
-            {% csrf_token %}
+<style>
+    .error-message {
+        color: red;
+        font-size: 14px;
+    }
 
-            <!-- Personal Information Section -->
-            <div class="form-section">
-                <h2>Personal Information</h2>
-                <div class="form-field">
-                    <label for="{{ form.national_id_no.id_for_label }}" class="required">National ID Number:</label>
-                    {{ form.national_id_no }}
-                    {{ form.national_id_no.errors }}
-                </div>
+    .has-error input {
+        border: 1px solid red;  /* You can customize the border style for highlighting */
+    }
+</style>
 
-                <div class="form-field">
-                    <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
-                    {{ form.registration_number }}
-                    {{ form.registration_number.errors }}
-                </div>
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Bursary Application Form</h1>
+    <form method="post" action="{% url 'apply' %}" id="bursaryForm">
+        {% csrf_token %}
 
-                <div class="form-field">
-                    <label for="{{ form.constituency_id.id_for_label }}" class="required">Constituency:</label>
-                    {{ form.constituency_id }}
-                    {{ form.constituency_id.errors }}
-                </div>
+        <!-- Personal Information Section -->
+        <div class="form-section">
+            <h2>Personal Information</h2>
+            <div class="form-field {% if form.national_id_no.errors %}has-error{% endif %}">
+                <label for="{{ form.national_id_no.id_for_label }}" class="required">National ID Number:</label>
+                {{ form.national_id_no }}
+                <span class="error-message">{{ form.national_id_no.errors }}</span>
             </div>
 
-            <!-- Institution Information Section -->
-            <div class="form-section">
-                <h2>Institution Information</h2>
-                <div class="form-field">
-                    <label for="{{ form.institution_id.id_for_label }}" class="required">Institution Name:</label>
-                    {{ form.institution_id }}
-                    {{ form.institution_id.errors }}
-                </div>
-
-                <div class="form-field">
-                    <label for="{{ form.account_number.id_for_label }}" class="required">Institution Account Number:</label>
-                    {{ form.account_number }}
-                    {{ form.account_number.errors }}
-                </div>
+            <div class="form-field {% if form.registration_number.errors %}has-error{% endif %}">
+                <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
+                {{ form.registration_number }}
+                <span class="error-message">{{ form.registration_number.errors }}</span>
             </div>
 
-            <!-- Financial Information Section -->
-            <div class="form-section">
-                <h2>Financial Information</h2>
-                <div class="form-field">
-                    <label for="{{ form.financial_year_id.id_for_label }}" class="required">Financial Year:</label>
-                    {{ form.financial_year_id }}
-                    {{ form.financial_year_id.errors }}
-                </div>
+            <div class="form-field {% if form.constituency_id.errors %}has-error{% endif %}">
+                <label for="{{ form.constituency_id.id_for_label }}" class="required">Constituency:</label>
+                {{ form.constituency_id }}
+                <span class="error-message">{{ form.constituency_id.errors }}</span>
+            </div>
+        </div>
+
+        <!-- Institution Information Section -->
+        <div class="form-section">
+            <h2>Institution Information</h2>
+            <div class="form-field {% if form.institution_id.errors %}has-error{% endif %}">
+                <label for="{{ form.institution_id.id_for_label }}" class="required">Institution Name:</label>
+                {{ form.institution_id }}
+                <span class="error-message">{{ form.institution_id.errors }}</span>
             </div>
 
-            <div class="form-buttons">
-                <button type="submit" class="submit-button blue-button">Submit</button>
-                <button type="button" class="red-button" onclick="cancelForm()">Cancel</button>
-                <button type="button" class="gray-button" onclick="clearForm()">Clear</button>
+            <div class="form-field {% if form.account_number.errors %}has-error{% endif %}">
+                <label for="{{ form.account_number.id_for_label }}" class="required">Institution Account Number:</label>
+                {{ form.account_number }}
+                <span class="error-message">{{ form.account_number.errors }}</span>
             </div>
-        </form>
-    </div>
+        </div>
 
-    <script>
-        function cancelForm() {
-            // Redirect the user to the landing page
-            window.location.href = "{% url 'landing_page' %}";
-        }
+        <!-- Financial Information Section -->
+        <div class="form-section">
+            <h2>Financial Information</h2>
+            <div class="form-field {% if form.financial_year_id.errors %}has-error{% endif %}">
+                <label for="{{ form.financial_year_id.id_for_label }}" class="required">Financial Year:</label>
+                {{ form.financial_year_id }}
+                <span class="error-message">{{ form.financial_year_id.errors }}</span>
+            </div>
+        </div>
 
-        function clearForm() {
-            // Reset the form fields
-            document.getElementById('bursaryForm').reset();
-        }
-    </script>
+        <div class="form-buttons">
+            <button type="submit" class="submit-button blue-button">Submit</button>
+            <button type="button" class="red-button" onclick="cancelForm()">Cancel</button>
+            <button type="button" class="gray-button" onclick="clearForm()">Clear</button>
+        </div>
+    </form>
+</div>
 
-    {% endblock %}
+<script>
+    function cancelForm() {
+        // Redirect the user to the landing page
+        window.location.href = "{% url 'landing_page' %}";
+    }
+
+    function clearForm() {
+        // Reset the form fields
+        document.getElementById('bursaryForm').reset();
+    }
+</script>
+
+{% endblock %}
