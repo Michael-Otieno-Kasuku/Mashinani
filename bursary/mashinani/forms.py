@@ -1,3 +1,6 @@
+from django import forms
+from .models import BursaryApplication, Institution, FinancialYear, Constituency, Account
+
 class ApplicationForm(forms.ModelForm):
     institution_id = forms.ModelChoiceField(
         queryset=Institution.objects.all(),
@@ -41,3 +44,5 @@ class ApplicationForm(forms.ModelForm):
         # Correctly set the initial value based on the existing instance
         if self.instance and hasattr(self.instance, 'institution_id') and self.instance.institution_id:
             self.fields['institution_id'].initial = self.instance.institution.institution_id
+
+    
