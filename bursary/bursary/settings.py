@@ -212,7 +212,7 @@ WSGI_APPLICATION = 'bursary.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mashinanipro',  # Your PostgreSQL database name
+        'NAME': 'mashinanibest',  # Your PostgreSQL database name
         'USER': 'kasuku',       # Your PostgreSQL username
         'PASSWORD': 'Student2023@Mmust',   # Your PostgreSQL password
         'HOST': 'localhost',                    # Your PostgreSQL host (usually 'localhost' for local installations)
