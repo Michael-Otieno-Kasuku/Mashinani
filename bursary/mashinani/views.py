@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, Voter, Student, Constituency,Account,Bank
+from .models import BursaryApplication, County,Constituency,Ward, Student,Account,Bank
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.lib.pagesizes import landscape, letter
@@ -30,13 +30,13 @@ class ApplicationFormView(View):
         if form.is_valid():
             national_id_no = form.cleaned_data['national_id_no']
             registration_number = form.cleaned_data['registration_number']
-            constituency_id = form.cleaned_data['constituency_id']
+            ward_id = form.cleaned_data['ward_id']
             institution_id = form.cleaned_data['institution_id']
             account_number = form.cleaned_data['account_number']
             financial_year_id = form.cleaned_data['financial_year_id']
             
-            # REQ-1: Check for existing application based on the id number and financial year
-            if BursaryApplication.objects.filter(national_id_no=national_id_no, financial_year_id=financial_year_id).exists():
+            # REQ-1: Check for existing application based on the id number, registration number and financial year
+            if BursaryApplication.objects.filter(national_id_no=national_id_no,registration_number=registration_number, financial_year_id=financial_year_id).exists():
                 form.add_error(None, "You have already applied bursary for this financial year!")
 
             # REQ-2: Check if the id number provided belongs to that student
@@ -47,11 +47,7 @@ class ApplicationFormView(View):
             elif not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
                 form.add_error(None, "You have chosen the wrong institution or provided a wrong registration number!")
 
-            # REQ-4 Check voter eligibility based on the id number and constituency
-            elif not Voter.objects.filter(national_id_no=national_id_no, constituency_id=constituency_id).exists():
-                form.add_error(None, "You have entered a wrong national id number or constituency name!")
-
-            # REQ-5 Check if the provided account number is correct
+            # REQ-4 Check if the provided account number is correct
             elif not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
                 form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
 
@@ -91,6 +87,7 @@ class ProgressReportView(View):
 
     def post(self, request):
         serial_number = request.POST.get('serial_number')
+        #REQ-5: Ensure that the provided serial number is a valid
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
             student = Student.objects.get(registration_number=bursary_application.registration_number)
@@ -105,7 +102,7 @@ class ProgressReportView(View):
                 'national_id_no': bursary_application.national_id_no,
                 'registration_number': bursary_application.registration_number,
                 'institution_id': bursary_application.institution_id,
-                'constituency_id': bursary_application.constituency_id,
+                'ward_id': bursary_application.ward_id,
             },
             'account_details':{
                 'bank_name':account.bank_id,
@@ -143,7 +140,7 @@ def generate_pdf(report_data):
         ["National ID Number:", report_data['student_details']['national_id_no']],
         ["Registration Number:", report_data['student_details']['registration_number']],
         ["Institution Name:", report_data['student_details']['institution_id']],
-        ["Constituency Name:", report_data['student_details']['constituency_id']],
+        ["Current Ward of Residence:", report_data['student_details']['ward_id']],
         ["SECTION B: Institution Bank Details"],
         ["Bank Name:", report_data['account_details']['bank_name']],
         ["Institution Bank Account Number:", report_data['account_details']['account_number']],

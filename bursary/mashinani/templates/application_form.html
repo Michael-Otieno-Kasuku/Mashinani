@@ -32,10 +32,10 @@
                 <span class="error-message">{{ form.registration_number.errors }}</span>
             </div>
 
-            <div class="form-field {% if form.constituency_id.errors %}has-error{% endif %}">
-                <label for="{{ form.constituency_id.id_for_label }}" class="required">Constituency:</label>
-                {{ form.constituency_id }}
-                <span class="error-message">{{ form.constituency_id.errors }}</span>
+            <div class="form-field {% if form.ward_id.errors %}has-error{% endif %}">
+                <label for="{{ form.ward_id.id_for_label }}" class="required">Current Ward of Residence:</label>
+                {{ form.ward_id }}
+                <span class="error-message">{{ form.ward_id.errors }}</span>
             </div>
         </div>
 
