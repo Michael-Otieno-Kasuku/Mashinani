@@ -1,5 +1,5 @@
 from django import forms
-from .models import BursaryApplication, Institution, FinancialYear, Constituency, Account
+from .models import BursaryApplication, Institution, FinancialYear, Ward, Account
 
 class ApplicationForm(forms.ModelForm):
     institution_id = forms.ModelChoiceField(
@@ -14,22 +14,22 @@ class ApplicationForm(forms.ModelForm):
         label='Financial Year',
         widget=forms.Select(attrs={'class': 'blue-input-box', 'placeholder': 'Select a financial year'}),
     )
-    constituency_id = forms.ModelChoiceField(
-        queryset=Constituency.objects.all(),
+    ward_id = forms.ModelChoiceField(
+        queryset=Ward.objects.all(),
         required=True,
-        label='Constituency',
-        widget=forms.Select(attrs={'class': 'blue-input-box', 'placeholder': 'Select a constituency'}),
+        label='Current Ward of Residence',
+        widget=forms.Select(attrs={'class': 'blue-input-box', 'placeholder': 'Select a ward'}),
     )
 
     class Meta:
         model = BursaryApplication
-        fields = ['national_id_no', 'registration_number', 'institution_id', 'account_number', 'constituency_id', 'financial_year_id']
+        fields = ['national_id_no', 'registration_number', 'institution_id', 'account_number', 'ward_id', 'financial_year_id']
         labels = {
             'national_id_no': 'National ID Number',
             'registration_number': 'Student Registration Number',
             'institution_id': 'Institution Name',
             'account_number': 'Institution Account Number',
-            'constituency_id': 'Constituency',
+            'ward_id': 'Current Ward of Residence',
             'financial_year_id': 'Financial Year',
         }
         widgets = {
