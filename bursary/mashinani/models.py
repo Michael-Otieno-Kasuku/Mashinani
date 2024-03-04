@@ -23,20 +23,28 @@ class Account(models.Model):
     def __str__(self):
         return self.account_number
 
+class County(models.Model):
+    county_id = models.AutoField(primary_key=True)
+    county_name = models.CharField(max_length=255, unique=True, help_text="Enter the county name")
+
+    def __str__(self):
+        return self.county_name
+
 class Constituency(models.Model):
     constituency_id = models.AutoField(primary_key=True)
+    county_id = models.ForeignKey(County, on_delete=models.CASCADE)
     constituency_name = models.CharField(max_length=255, unique=True, help_text="Enter the constituency name")
 
     def __str__(self):
         return self.constituency_name
 
-class Voter(models.Model):
-    voter_id = models.AutoField(primary_key=True)
+class Ward(models.Model):
+    ward_id = models.AutoField(primary_key=True)
     constituency_id = models.ForeignKey(Constituency, on_delete=models.CASCADE)
-    national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")
+    ward_name = models.CharField(max_length=200, unique=True, help_text="Enter the ward name")
 
     def __str__(self):
-        return self.national_id_no
+        return self.ward_name
 
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
@@ -62,7 +70,7 @@ class BursaryApplication(models.Model):
     registration_number = models.CharField(max_length=200,help_text="Enter a valid Student Registration Number")
     institution_id = models.ForeignKey(Institution, on_delete=models.CASCADE)
     account_number = models.CharField(max_length=200,help_text="Enter a valid Account Number")
-    constituency_id = models.ForeignKey(Constituency, on_delete=models.CASCADE)
+    ward_id = models.ForeignKey(Ward, on_delete=models.CASCADE)
     financial_year_id = models.ForeignKey(FinancialYear, on_delete=models.CASCADE)
     serial_number = models.CharField(max_length=200, unique=True, help_text="Auto-generated serial number")
     date_submitted = models.DateTimeField(auto_now_add=True, help_text="Date of submission")
