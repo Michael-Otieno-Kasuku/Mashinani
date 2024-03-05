@@ -139,11 +139,47 @@ class ProgressReportView(View):
         response['Content-Disposition'] = f'attachment; filename="{serial_number}_report.pdf"'
         return response
 
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
+from reportlab.lib.units import inch
+from io import BytesIO
+
 def generate_pdf(report_data):
     buffer = BytesIO()
-    pdf_canvas = SimpleDocTemplate(buffer, pagesize = landscape(letter))
+    pdf_canvas = SimpleDocTemplate(buffer, pagesize=landscape(letter))
 
-    #Define table data
+    # Define header and footer styles
+    header_style = ParagraphStyle(
+        "Header",
+        parent=getSampleStyleSheet()["Heading1"],
+        fontColor=colors.white,
+        fontSize=16,
+        spaceAfter=6,
+    )
+
+    footer_style = ParagraphStyle(
+        "Footer",
+        parent=getSampleStyleSheet()["Normal"],
+        fontColor=colors.white,
+        fontSize=12,
+        spaceBefore=6,
+    )
+
+    # Define header and footer content
+    header_text = f"<b>{report_data['student_details']['county_name']}</b> NG-CDF Program <b>{report_data['application_details']['financial_year_id']}</b> Financial year"
+    footer_text = "Copyright 2024 Bursary Mashinani. All rights reserved!"
+
+    # Create header and footer paragraphs
+    header = Paragraph(header_text, header_style)
+    footer = Paragraph(footer_text, footer_style)
+
+    # Create the header and footer space
+    header_space = Spacer(1, 0.5 * inch)
+    footer_space = Spacer(1, 0.5 * inch)
+
+    # Define table data
     table_data = [
         ["BURSARY APPLICATION REPORT"],
         ["SECTION A: Student Details"],
@@ -166,38 +202,39 @@ def generate_pdf(report_data):
         ["Amount Disbursed(Ksh.): ", report_data['disbursement_details']['amount_disbursed']],
         ["Date Disbursed:", report_data['disbursement_details']['date_disbursed']],
     ]
-    
-    #Create a table
+
+    # Create a table
     table = Table(table_data)
 
-    #Set the table style
-    # Set table style
-    style = TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-                        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                        ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # Header background color
-                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Content background color
-                        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                        ('FONTSIZE', (0, 0), (-1, -1), 12),
-                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-                        ('TOPPADDING', (0, 0), (-1, -1), 5),
-                        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-                        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                        ('SPAN', (0, 0), (1, 0)),  # Merge cells for the heading
-                        ])
+    # Set the table style
+    table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.blue),  # Header background color
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Content background color
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 12),
+        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('SPAN', (0, 0), (1, 0)),  # Merge cells for the heading
+    ])
 
-    table.setStyle(style)
+    table.setStyle(table_style)
 
     # Add page border
     frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, colors.black)])
     table.setStyle(frame_styling)
 
-    # Add table to the PDF
-    elements = [table]
+    # Add watermark
+    watermark = Paragraph('<font color="gray" size="24">CONFIDENTIAL</font>', getSampleStyleSheet()['Normal'])
+    watermark_space = Spacer(1, 1 * inch)
 
-    # Add space after table
-    elements.append(Spacer(1, 0.25 * inch))
+    # Add elements to the PDF
+    elements = [header, header_space, table, watermark_space, watermark, footer_space, footer]
 
     # Build PDF
     pdf_canvas.build(elements)
