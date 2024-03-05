@@ -150,36 +150,39 @@ def generate_pdf(report_data):
     buffer = BytesIO()
     pdf_canvas = SimpleDocTemplate(buffer, pagesize=landscape(letter))
 
-    # Define header and footer styles
+    # Define KRA-inspired header and footer styles
     header_style = ParagraphStyle(
         "Header",
         parent=getSampleStyleSheet()["Heading1"],
-        fontColor=colors.white,
-        fontSize=16,
-        spaceAfter=6,
+        fontColor=colors.black,
+        fontSize=18,
+        spaceAfter=12,
+        spaceBefore=12,
+        alignment=1,  # Center alignment
     )
 
     footer_style = ParagraphStyle(
         "Footer",
         parent=getSampleStyleSheet()["Normal"],
-        fontColor=colors.white,
-        fontSize=12,
-        spaceBefore=6,
+        fontColor=colors.black,
+        fontSize=14,
+        spaceBefore=12,
+        alignment=1,  # Center alignment
     )
 
-    # Define header and footer content
-    header_text = f"<b>{report_data['student_details']['county_name']}</b> NG-CDF Program <b>{report_data['application_details']['financial_year_id']}</b> Financial year"
-    footer_text = "Copyright 2024 Bursary Mashinani. All rights reserved!"
+    # Define header and footer content in KRA style
+    header_text = f"<font color='#01689b'>{report_data['student_details']['constituency_name']}</font> NG-CDF Program <font color='#01689b'>{report_data['application_details']['financial_year_id']}</font> Financial Year"
+    footer_text = "<font color='#01689b'>© 2024 Bursary Mashinani. All rights reserved.</font>"
 
-    # Create header and footer paragraphs
+    # Create KRA-inspired header and footer paragraphs
     header = Paragraph(header_text, header_style)
     footer = Paragraph(footer_text, footer_style)
 
-    # Create the header and footer space
-    header_space = Spacer(1, 0.5 * inch)
-    footer_space = Spacer(1, 0.5 * inch)
+    # Create the header and footer space with a touch of elegance
+    header_space = Spacer(1, 0.75 * inch)
+    footer_space = Spacer(1, 0.75 * inch)
 
-    # Define table data
+    # Define KRA-inspired table data
     table_data = [
         ["BURSARY APPLICATION REPORT"],
         ["SECTION A: Student Details"],
@@ -203,43 +206,43 @@ def generate_pdf(report_data):
         ["Date Disbursed:", report_data['disbursement_details']['date_disbursed']],
     ]
 
-    # Create a table
+    # Create KRA-inspired table
     table = Table(table_data)
 
-    # Set the table style
+    # Set the table style with a KRA touch
     table_style = TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.blue),  # Header background color
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#01689b')),  # Header background color
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Content background color
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 12),
-        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 14),
+        ('LEFTPADDING', (0, 0), (-1, -1), 12),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 12),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
         ('SPAN', (0, 0), (1, 0)),  # Merge cells for the heading
     ])
 
     table.setStyle(table_style)
 
-    # Add page border
+    # Add an exquisite page border
     frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, colors.black)])
     table.setStyle(frame_styling)
 
-    # Add watermark
-    watermark = Paragraph('<font color="gray" size="24">CONFIDENTIAL</font>', getSampleStyleSheet()['Normal'])
-    watermark_space = Spacer(1, 1 * inch)
+    # Add a KRA-inspired watermark
+    watermark = Paragraph('<font color="#01689b" size="24">CONFIDENTIAL</font>', getSampleStyleSheet()['Normal'])
+    watermark_space = Spacer(1, 1.25 * inch)
 
-    # Add elements to the PDF
+    # Add elements to the PDF with a KRA touch
     elements = [header, header_space, table, watermark_space, watermark, footer_space, footer]
 
-    # Build PDF
+    # Build an outstanding PDF
     pdf_canvas.build(elements)
 
-    # Save the PDF file
+    # Save the exceptional PDF file
     pdf_bytes = buffer.getvalue()
     buffer.close()
 
