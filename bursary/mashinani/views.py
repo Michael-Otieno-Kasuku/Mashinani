@@ -52,7 +52,7 @@ class ApplicationFormView(View):
             elif not Resident.objects.filter(national_id_no=national_id_no, ward_id=ward_id).exists():
                 form.add_error(None, "You have entered a wrong national id number or chosen the wrong ward")
             
-            # REQ-5 Check if the provided account number is correct
+            # REQ-5 Check if the provided account number is correct based on the chosen institution
             elif not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
                 form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
 
@@ -91,6 +91,7 @@ class ProgressReportView(View):
         return render(request, 'progress_report.html')
 
     def post(self, request):
+        #REQ-6: Check if the provided serial number is a valid serial number
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
@@ -128,13 +129,6 @@ class ProgressReportView(View):
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{serial_number}_report.pdf"'
         return response
-
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import landscape, letter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Frame, PageTemplate
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from io import BytesIO
-from django.http import HttpResponse
 
 def generate_pdf(report_data, serial_number):
     buffer = BytesIO()
