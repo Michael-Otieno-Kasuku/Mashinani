@@ -2,32 +2,26 @@
 
 from django.db import migrations
 
-def insert_students(apps, schema_editor):
+def insert_residents(apps, schema_editor):
     import random
 
-    Student = apps.get_model('mashinani', 'Student')
-    Institution = apps.get_model('mashinani', 'Institution')
+    Resident = apps.get_model('mashinani', 'Resident')
+    Ward = apps.get_model('mashinani', 'Ward')
 
-    # Fetching existing institutions data
-    institutions = Institution.objects.all()
+    # Fetching existing wards data
+    wards = Ward.objects.all()
 
-    first_names = ['John', 'Jane', 'Mary', 'Peter', 'Alice', 'David', 'Grace', 'Kevin', 'Mercy', 'Brian']
-    last_names = ['Omondi', 'Wanjiru', 'Kiptoo', 'Njoroge', 'Mwangi', 'Kamau', 'Musyoka', 'Korir', 'Atieno', 'Ochieng']
-
-    students_data = []
+    residents_data = []
 
     for i in range(50):
-        student_data = {
+        resident_data = {
             'national_id_no': '1{:07}'.format(i),
-            'institution_id': random.choice(institutions),
-            'registration_number': 'STU{:03}'.format(i + 1),
-            'first_name': random.choice(first_names),
-            'last_name': random.choice(last_names),
+            'ward_id': random.choice(wards),
         }
-        students_data.append(student_data)
+        residents_data.append(resident_data)
 
-    for data in students_data:
-        Student.objects.create(**data)
+    for data in residents_data:
+        Resident.objects.create(**data)
 
 class Migration(migrations.Migration):
 
@@ -36,5 +30,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(insert_students),
+        migrations.RunPython(insert_residents),
     ]

@@ -46,6 +46,11 @@ class Ward(models.Model):
     def __str__(self):
         return self.ward_name
 
+class Resident(models.Model):
+    resident_id = models.AutoField(primary_key=True)
+    national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")
+    ward_id = models.ForeignKey(Ward, on_delete=models.CASCADE)
+
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
     national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")

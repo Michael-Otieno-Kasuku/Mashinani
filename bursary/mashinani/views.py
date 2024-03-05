@@ -4,13 +4,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
 from io import BytesIO
+from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import BursaryApplication, Student, Account, Ward, Constituency, County
+from .models import BursaryApplication, Student, Account, Ward, Resident,Constituency, County
 
 
 class LandingPageView(View):
@@ -46,8 +47,12 @@ class ApplicationFormView(View):
             # REQ-3: Check student registration, i.e., if the applicant is a student of the given institution
             elif not Student.objects.filter(institution_id=institution_id, registration_number=registration_number).exists():
                 form.add_error(None, "You have chosen the wrong institution or provided a wrong registration number!")
-
-            # REQ-4 Check if the provided account number is correct
+            
+            # REQ-4 Check if the student is indeed a resident of the chosen ward based on the national id number and the chosen ward
+            elif not Resident.objects.filter(national_id_no=national_id_no, ward_id=ward_id).exists():
+                form.add_error(None, "You have entered a wrong national id number or chosen the wrong ward")
+            
+            # REQ-5 Check if the provided account number is correct
             elif not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
                 form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
 
@@ -94,9 +99,6 @@ class ProgressReportView(View):
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
 
-        # Update ward_id to the actual ID of the ward
-        bursary_application.ward_id = ward.ward_id
-
         report_data = {
             'student_details': {
                 'first_name': student.first_name,
@@ -127,6 +129,13 @@ class ProgressReportView(View):
         response['Content-Disposition'] = f'attachment; filename="{serial_number}_report.pdf"'
         return response
 
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import landscape, letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Frame, PageTemplate
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from io import BytesIO
+from django.http import HttpResponse
+
 def generate_pdf(report_data, serial_number):
     buffer = BytesIO()
     pdf_canvas = SimpleDocTemplate(buffer, pagesize=landscape(letter))
@@ -134,36 +143,60 @@ def generate_pdf(report_data, serial_number):
     styles = getSampleStyleSheet()
     normal_style = styles['Normal']
     heading_style = styles['Heading1']
+    sub_heading_style = styles['Heading2']
+    title_style = styles['Title']
+
+    # Theme colors
+    theme_white = colors.white
+    theme_blue = colors.HexColor("#007acc")  # Use your preferred shade of blue
+
+    # Define a PageTemplate with header
+    header = Paragraph("Progress Report", ParagraphStyle(name='Title', parent=normal_style, textColor=theme_blue))
+    header_frame = Frame(pdf_canvas.leftMargin, pdf_canvas.height + pdf_canvas.bottomMargin + 6, pdf_canvas.width, 0.5 * inch, showBoundary=0)
+    header_frame.addFromList([header], pdf_canvas)
+
+    # Add the header_frame to the header_template
+    header_template = PageTemplate(id='header_template', frames=[header_frame])
+    pdf_canvas.addPageTemplates([header_template])
 
     table_data = [
-        [Paragraph("BURSARY APPLICATION REPORT", heading_style)],
-        [Paragraph("SECTION A: Student Details", heading_style)],
-        [Paragraph("First Name:", normal_style), report_data['student_details']['first_name']],
-        [Paragraph("Last Name:", normal_style), report_data['student_details']['last_name']],
-        [Paragraph("National ID Number:", normal_style), report_data['student_details']['national_id_no']],
-        [Paragraph("Registration Number:", normal_style), report_data['student_details']['registration_number']],
-        [Paragraph("Institution Name:", normal_style), report_data['student_details']['institution_id']],
-        [Paragraph("Current Ward of Residence:", normal_style), report_data['student_details']['ward_name']],
-        [Paragraph("SECTION B: Institution Bank Details", heading_style)],
-        [Paragraph("Bank Name:", normal_style), report_data['account_details']['bank_name']],
-        [Paragraph("Institution Bank Account Number:", normal_style), report_data['account_details']['account_number']],
-        [Paragraph("SECTION C: Application Details", heading_style)],
-        [Paragraph("Application Serial Number:", normal_style), report_data['application_details']['serial_number']],
-        [Paragraph("Financial Year:", normal_style), report_data['application_details']['financial_year_id']],
-        [Paragraph("Date Applied:", normal_style), report_data['application_details']['date_submitted']],
-        [Paragraph("SECTION D: Disbursement Details", heading_style)],
-        [Paragraph("Amount Disbursed(Ksh.):", normal_style), report_data['disbursement_details']['amount_disbursed']],
-        [Paragraph("Date Disbursed:", normal_style), report_data['disbursement_details']['date_disbursed']],
+        [Paragraph("BURSARY APPLICATION REPORT", heading_style.copyWith(color=theme_blue))],
+        [Spacer(1, 0.25 * inch)],
+        [Paragraph("SECTION A: Student Details", sub_heading_style.copyWith(color=theme_blue))],
+        [Spacer(1, 0.15 * inch)],
+        [Paragraph("First Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['first_name']],
+        [Paragraph("Last Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['last_name']],
+        [Paragraph("National ID Number:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['national_id_no']],
+        [Paragraph("Registration Number:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['registration_number']],
+        [Paragraph("Institution Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['institution_id']],
+        [Paragraph("Current Ward of Residence:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['ward_id']],
+        [Spacer(1, 0.25 * inch)],
+        [Paragraph("SECTION B: Institution Bank Details", sub_heading_style.copyWith(color=theme_blue))],
+        [Spacer(1, 0.15 * inch)],
+        [Paragraph("Bank Name:", normal_style.copyWith(color=theme_blue)), report_data['account_details']['bank_name']],
+        [Paragraph("Institution Bank Account Number:", normal_style.copyWith(color=theme_blue)), report_data['account_details']['account_number']],
+        [Spacer(1, 0.25 * inch)],
+        [Paragraph("SECTION C: Application Details", sub_heading_style.copyWith(color=theme_blue))],
+        [Spacer(1, 0.15 * inch)],
+        [Paragraph("Application Serial Number:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['serial_number']],
+        [Paragraph("Financial Year:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['financial_year_id']],
+        [Paragraph("Date Applied:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['date_submitted']],
+        [Spacer(1, 0.25 * inch)],
+        [Paragraph("SECTION D: Disbursement Details", sub_heading_style.copyWith(color=theme_blue))],
+        [Spacer(1, 0.15 * inch)],
+        [Paragraph("Amount Disbursed(Ksh.):", normal_style.copyWith(color=theme_blue)), report_data['disbursement_details']['amount_disbursed']],
+        [Paragraph("Date Disbursed:", normal_style.copyWith(color=theme_blue)), report_data['disbursement_details']['date_disbursed']],
     ]
 
     table = Table(table_data)
 
+    # Table style with white and blue colors
     style = TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, -1), theme_blue),
+        ('BACKGROUND', (0, 0), (-1, 0), theme_white),
+        ('BACKGROUND', (0, 1), (-1, -1), theme_white),
         ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 0), (-1, -1), 12),
         ('LEFTPADDING', (0, 0), (-1, -1), 10),
@@ -176,7 +209,8 @@ def generate_pdf(report_data, serial_number):
 
     table.setStyle(style)
 
-    frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, colors.black)])
+    # Frame styling with blue color
+    frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, theme_blue)])
     table.setStyle(frame_styling)
 
     elements = [table, Spacer(1, 0.25 * inch)]
