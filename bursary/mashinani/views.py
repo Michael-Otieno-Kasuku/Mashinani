@@ -55,7 +55,11 @@ class ApplicationFormView(View):
             # REQ-5 Check if the provided account number is correct based on the chosen institution
             elif not Account.objects.filter(institution_id=institution_id, account_number=account_number).exists():
                 form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
-
+            
+            # REQ-6 Check if the financial year status is open or closed based on the chosen financial year
+            elif not Financial.objects.filter(financial_year_id=financial_year_id, financial_year_status=True).exists():
+                form.add_error(None, "The application for the financial year you've chosen is closed!")
+            
             else:
                 # Generate serial number
                 serial_number = generate_serial_number(national_id_no, registration_number, financial_year_id, institution_id)
@@ -91,7 +95,7 @@ class ProgressReportView(View):
         return render(request, 'progress_report.html')
 
     def post(self, request):
-        #REQ-6: Check if the provided serial number is a valid serial number
+        #REQ-7: Check if the provided serial number is a valid serial number
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)

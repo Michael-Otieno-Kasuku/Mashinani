@@ -6,10 +6,10 @@ def insert_financial_year(apps, schema_editor):
     FinancialYear = apps.get_model('mashinani', 'FinancialYear')
 
     financial_year_data = [
-        {'financial_year': '2023/2024'},
-        {'financial_year': '2024/2025'},
-        {'financial_year': '2025/2026'},
-        {'financial_year': '2026/2027'},
+        {'financial_year': '2023/2024', 'financial_year_status': True},
+        {'financial_year': '2024/2025', 'financial_year_status': False},
+        {'financial_year': '2025/2026', 'financial_year_status': False},
+        {'financial_year': '2026/2027', 'financial_year_status': False},
         # Add more financial years as needed
     ]
 

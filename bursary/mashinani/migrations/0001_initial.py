@@ -31,6 +31,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('financial_year_id', models.AutoField(primary_key=True, serialize=False)),
                 ('financial_year', models.CharField(help_text='Enter a valid Financial Year', max_length=200, unique=True)),
+                ('financial_year_status', models.CharField(help_text='Enter a valid Financial Year Status',unique=False)),
             ],
         ),
         migrations.CreateModel(

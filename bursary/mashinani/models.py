@@ -51,6 +51,9 @@ class Resident(models.Model):
     national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")
     ward_id = models.ForeignKey(Ward, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.national_id_no
+
 class Student(models.Model):
     student_id = models.AutoField(primary_key=True)
     national_id_no = models.CharField(max_length=200, unique=True, help_text="Enter a valid National ID Number")
@@ -65,6 +68,7 @@ class Student(models.Model):
 class FinancialYear(models.Model):
     financial_year_id = models.AutoField(primary_key=True)
     financial_year = models.CharField(max_length=200, unique=True, help_text="Enter a valid Financial Year")
+    financial_year_status = models.BooleanField(help_text="Enter a valid financial year status")
 
     def __str__(self):
         return self.financial_year
