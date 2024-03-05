@@ -11,7 +11,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
 from django.http import HttpResponse
 from django.shortcuts import render
-from .models import BursaryApplication, Student, Account, Ward, Resident,Constituency, County
+from .models import BursaryApplication, Student, Account, Ward, Resident,Constituency, County,FinancialYear
 
 
 class LandingPageView(View):
@@ -57,7 +57,7 @@ class ApplicationFormView(View):
                 form.add_error(None, "You have entered a wrong account number or chosen the wrong institution")
             
             # REQ-6 Check if the financial year status is open or closed based on the chosen financial year
-            elif not Financial.objects.filter(financial_year_id=financial_year_id, financial_year_status=True).exists():
+            elif not FinancialYear.objects.filter(financial_year=financial_year_id, financial_year_status=True).exists():
                 form.add_error(None, "The application for the financial year you've chosen is closed!")
             
             else:
