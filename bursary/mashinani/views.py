@@ -3,16 +3,15 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from io import BytesIO
-from reportlab.lib.units import inch
+from .models import BursaryApplication, Resident, Student, Ward,Account,Bank, FinancialYear
+from django.http import HttpResponse
+from django.conf import settings
 from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib import colors
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer, Paragraph
-from django.http import HttpResponse
-from django.shortcuts import render
-from .models import BursaryApplication, Student, Account, Ward, Resident,Constituency, County,FinancialYear
-
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
+from reportlab.lib.units import inch
+from io import BytesIO
 
 class LandingPageView(View):
     def get(self, request):
@@ -95,7 +94,6 @@ class ProgressReportView(View):
         return render(request, 'progress_report.html')
 
     def post(self, request):
-        #REQ-7: Check if the provided serial number is a valid serial number
         serial_number = request.POST.get('serial_number')
         try:
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
@@ -103,118 +101,101 @@ class ProgressReportView(View):
             account = Account.objects.get(account_number=bursary_application.account_number)
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
-
+                
         report_data = {
             'student_details': {
-                'first_name': student.first_name,
-                'last_name': student.last_name,
+                'first_name':student.first_name,
+                'last_name':student.last_name,
                 'national_id_no': bursary_application.national_id_no,
                 'registration_number': bursary_application.registration_number,
                 'institution_id': bursary_application.institution_id,
                 'ward_id': bursary_application.ward_id,
             },
-            'account_details': {
-                'bank_name': account.bank_id,
+            'account_details':{
+                'bank_name':account.bank_id,
                 'account_number': bursary_application.account_number,
             },
-            'application_details': {
+            'application_details':{
                 'serial_number': bursary_application.serial_number,
                 'financial_year_id': bursary_application.financial_year_id,
                 'date_submitted': bursary_application.date_submitted,
             },
-            'disbursement_details': {
+            'disbursement_details':{
                 'amount_disbursed': bursary_application.amount_disbursed,
                 'date_disbursed': bursary_application.date_disbursed,
             },
         }
 
-        pdf_bytes = generate_pdf(report_data, serial_number)
+        # Generate PDF
+        pdf_bytes = generate_pdf(report_data)
 
+        # Return the PDF file as a response
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{serial_number}_report.pdf"'
         return response
 
-def generate_pdf(report_data, serial_number):
+def generate_pdf(report_data):
     buffer = BytesIO()
-    pdf_canvas = SimpleDocTemplate(buffer, pagesize=landscape(letter))
+    pdf_canvas = SimpleDocTemplate(buffer, pagesize = landscape(letter))
 
-    styles = getSampleStyleSheet()
-    normal_style = styles['Normal']
-    heading_style = styles['Heading1']
-    sub_heading_style = styles['Heading2']
-    title_style = styles['Title']
-
-    # Theme colors
-    theme_white = colors.white
-    theme_blue = colors.HexColor("#007acc")  # Use your preferred shade of blue
-
-    # Define a PageTemplate with header
-    header = Paragraph("Progress Report", ParagraphStyle(name='Title', parent=normal_style, textColor=theme_blue))
-    header_frame = Frame(pdf_canvas.leftMargin, pdf_canvas.height + pdf_canvas.bottomMargin + 6, pdf_canvas.width, 0.5 * inch, showBoundary=0)
-    header_frame.addFromList([header], pdf_canvas)
-
-    # Add the header_frame to the header_template
-    header_template = PageTemplate(id='header_template', frames=[header_frame])
-    pdf_canvas.addPageTemplates([header_template])
-
+    #Define table data
     table_data = [
-        [Paragraph("BURSARY APPLICATION REPORT", heading_style.copyWith(color=theme_blue))],
-        [Spacer(1, 0.25 * inch)],
-        [Paragraph("SECTION A: Student Details", sub_heading_style.copyWith(color=theme_blue))],
-        [Spacer(1, 0.15 * inch)],
-        [Paragraph("First Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['first_name']],
-        [Paragraph("Last Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['last_name']],
-        [Paragraph("National ID Number:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['national_id_no']],
-        [Paragraph("Registration Number:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['registration_number']],
-        [Paragraph("Institution Name:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['institution_id']],
-        [Paragraph("Current Ward of Residence:", normal_style.copyWith(color=theme_blue)), report_data['student_details']['ward_id']],
-        [Spacer(1, 0.25 * inch)],
-        [Paragraph("SECTION B: Institution Bank Details", sub_heading_style.copyWith(color=theme_blue))],
-        [Spacer(1, 0.15 * inch)],
-        [Paragraph("Bank Name:", normal_style.copyWith(color=theme_blue)), report_data['account_details']['bank_name']],
-        [Paragraph("Institution Bank Account Number:", normal_style.copyWith(color=theme_blue)), report_data['account_details']['account_number']],
-        [Spacer(1, 0.25 * inch)],
-        [Paragraph("SECTION C: Application Details", sub_heading_style.copyWith(color=theme_blue))],
-        [Spacer(1, 0.15 * inch)],
-        [Paragraph("Application Serial Number:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['serial_number']],
-        [Paragraph("Financial Year:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['financial_year_id']],
-        [Paragraph("Date Applied:", normal_style.copyWith(color=theme_blue)), report_data['application_details']['date_submitted']],
-        [Spacer(1, 0.25 * inch)],
-        [Paragraph("SECTION D: Disbursement Details", sub_heading_style.copyWith(color=theme_blue))],
-        [Spacer(1, 0.15 * inch)],
-        [Paragraph("Amount Disbursed(Ksh.):", normal_style.copyWith(color=theme_blue)), report_data['disbursement_details']['amount_disbursed']],
-        [Paragraph("Date Disbursed:", normal_style.copyWith(color=theme_blue)), report_data['disbursement_details']['date_disbursed']],
+        ["BURSARY APPLICATION REPORT"],
+        ["SECTION A: Student Details"],
+        ["First Name:", report_data['student_details']['first_name']],
+        ["Last Name:", report_data['student_details']['last_name']],
+        ["National ID Number:", report_data['student_details']['national_id_no']],
+        ["Registration Number:", report_data['student_details']['registration_number']],
+        ["Institution Name:", report_data['student_details']['institution_id']],
+        ["Current Ward of Residence:", report_data['student_details']['ward_id']],
+        ["SECTION B: Institution Bank Details"],
+        ["Bank Name:", report_data['account_details']['bank_name']],
+        ["Institution Bank Account Number:", report_data['account_details']['account_number']],
+        ['SECTION C: Application Details'],
+        ["Application Serial Number:", report_data['application_details']['serial_number']],
+        ["Financial Year:", report_data['application_details']['financial_year_id']],
+        ["Date Applied:", report_data['application_details']['date_submitted']],
+        ["SECTION D: Disbursement Details"],
+        ["Amount Disbursed(Ksh.): ", report_data['disbursement_details']['amount_disbursed']],
+        ["Date Disbursed:", report_data['disbursement_details']['date_disbursed']],
     ]
-
+    
+    #Create a table
     table = Table(table_data)
 
-    # Table style with white and blue colors
-    style = TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('TEXTCOLOR', (0, 0), (-1, -1), theme_blue),
-        ('BACKGROUND', (0, 0), (-1, 0), theme_white),
-        ('BACKGROUND', (0, 1), (-1, -1), theme_white),
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 0), (-1, -1), 12),
-        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('SPAN', (0, 0), (1, 0)),
-    ])
+    #Set the table style
+    # Set table style
+    style = TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+                        ('BACKGROUND', (0, 0), (-1, 0), colors.white),  # Header background color
+                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),  # Content background color
+                        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                        ('FONTSIZE', (0, 0), (-1, -1), 12),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ('TOPPADDING', (0, 0), (-1, -1), 5),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                        ('SPAN', (0, 0), (1, 0)),  # Merge cells for the heading
+                        ])
 
     table.setStyle(style)
 
-    # Frame styling with blue color
-    frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, theme_blue)])
+    # Add page border
+    frame_styling = TableStyle([('BOX', (0, 0), (-1, -1), 2, colors.black)])
     table.setStyle(frame_styling)
 
-    elements = [table, Spacer(1, 0.25 * inch)]
+    # Add table to the PDF
+    elements = [table]
 
+    # Add space after table
+    elements.append(Spacer(1, 0.25 * inch))
+
+    # Build PDF
     pdf_canvas.build(elements)
 
+    # Save the PDF file
     pdf_bytes = buffer.getvalue()
     buffer.close()
 
