@@ -3,7 +3,7 @@ import uuid
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from .forms import ApplicationForm
-from .models import BursaryApplication, Resident, Student, Ward,Account,Bank, FinancialYear
+from .models import BursaryApplication, Resident, Student, Ward,Account,Bank, FinancialYear,County, Constituency
 from django.http import HttpResponse
 from django.conf import settings
 from reportlab.lib.pagesizes import landscape, letter
@@ -99,6 +99,9 @@ class ProgressReportView(View):
             bursary_application = BursaryApplication.objects.get(serial_number=serial_number)
             student = Student.objects.get(registration_number=bursary_application.registration_number)
             account = Account.objects.get(account_number=bursary_application.account_number)
+            ward = Ward.objects.get(ward_name=bursary_application.ward_id)
+            constituency = ward.constituency_id
+            county = constituency.county_id
         except BursaryApplication.DoesNotExist:
             return render(request, 'error_page.html')
                 
@@ -110,6 +113,8 @@ class ProgressReportView(View):
                 'registration_number': bursary_application.registration_number,
                 'institution_id': bursary_application.institution_id,
                 'ward_id': bursary_application.ward_id,
+                'constituency_name': constituency.constituency_name,  # Adding constituency information
+                'county_name': county.county_name,  # Adding county information
             },
             'account_details':{
                 'bank_name':account.bank_id,
@@ -147,6 +152,8 @@ def generate_pdf(report_data):
         ["National ID Number:", report_data['student_details']['national_id_no']],
         ["Registration Number:", report_data['student_details']['registration_number']],
         ["Institution Name:", report_data['student_details']['institution_id']],
+        ["Current County of Residence:", report_data['student_details']['county_name']],
+        ["Current Constituency of Residence:", report_data['student_details']['constituency_name']],
         ["Current Ward of Residence:", report_data['student_details']['ward_id']],
         ["SECTION B: Institution Bank Details"],
         ["Bank Name:", report_data['account_details']['bank_name']],
