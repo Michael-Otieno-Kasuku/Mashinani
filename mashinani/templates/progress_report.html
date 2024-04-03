@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h2>Progress Report</h2>
+<!-- Display progress report details here -->
+<form method="post" action="{% url 'progress_report' %}" class="report-form" id="reportForm" data-landing-page-url="{% url 'landing_page' %}">
+    {% csrf_token %}
+    <label for="serial_number">Serial Number:</label>
+    <input type="text" name="serial_number" class="serial-input" required placeholder="Enter Serial Number">
+        <div class="form-buttons">
+            <button type="submit" class="submit-button blue-button">Generate Report</button>
+            <button type="button" class="red-button" onclick="cancelForm()">Cancel</button>
+            <button type="button" class="gray-button" onclick="clearForm()">Clear</button>
+        </div>
+</form>
+<script src="{% static 'js/progress_report.js' %}"></script>
+{% endblock %}

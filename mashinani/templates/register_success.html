@@ -1,0 +1,11 @@
+{% extends 'base_authentication.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/register_success.css' %}">
+<div class="success-container">
+    <h2 class="success-title">Account Created Successfully!</h2>
+    <a href="{% url 'login' %}" class="text-link">Back to Login</a>
+</div>
+{% endblock %}

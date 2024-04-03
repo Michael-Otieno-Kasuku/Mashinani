@@ -1,0 +1,42 @@
+{% extends 'base_authentication.html' %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/signup.css' %}">
+<div class="register-container">
+    <div class="register-form">
+        <h2 class="form-title">Bursary Mashinani</h2>
+        <form method="post" action="{% url 'register' %}" id="registration-form">
+            {% csrf_token %}
+            {% if form.errors %}
+            <div class="error-message" role="alert">
+                {% for field, error_list in form.errors.items %}
+                    {% for error in error_list %}
+                        {{ error }}
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% if field.name == 'password_hash' %}
+                        {{ field }}
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                        {% for error in field.errors %}
+                            <span class="error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn-primary">Sign Up</button>
+        </form>
+            <p>Already have an account? <a href="{% url 'login' %}" class="text-link">Log In</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

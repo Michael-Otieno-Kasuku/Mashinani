@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    <h1 class="page-title">Bursary Application Form</h1>
+    <form method="post" action="{% url 'apply' %}" id="bursaryForm" data-landing-page-url="{% url 'landing_page' %}">
+        {% csrf_token %}
+        {% if form.errors %}
+        <div class="error-message" role="alert">
+            {% for field, error_list in form.errors.items %}
+                {% for error in error_list %}
+                    {{ error }}
+                {% endfor %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        <div class="form-section">
+            <h2>Personal Information Section</h2>
+            <div>
+                <label for="{{ form.national_id_no.id_for_label }}" class="required">National ID Number:</label>
+                {{ form.national_id_no }}
+                <span class="error-message">{{ form.errors.national_id_no }}</span>
+            </div>
+            <div>
+                <label for="{{ form.registration_number.id_for_label }}" class="required">Student Registration Number:</label>
+                {{ form.registration_number }}
+                <span class="error-message">{{ form.errors.registration_number }}</span>
+            </div>
+            <div>
+                <label for="{{ form.ward_id.id_for_label }}" class="required">Current Ward of Residence:</label>
+                {{ form.ward_id }}
+                <span class="error-message">{{ form.errors.ward_id }}</span>
+            </div>
+        </div>
+        <div class="form-section">
+            <h2>Institution Information Section</h2>
+            <div>
+                <label for="{{ form.institution_id.id_for_label }}" class="required">Institution Name:</label>
+                {{ form.institution_id }}
+                <span class="error-message">{{ form.errors.institution_id }}</span>
+            </div>
+            <div>
+                <label for="{{ form.account_number.id_for_label }}" class="required">Institution Account Number:</label>
+                {{ form.account_number }}
+                <span class="error-message">{{ form.errors.account_number }}</span>
+            </div>
+        </div>
+        <div class="form-section">
+            <h2>Financial Year Information Section</h2>
+            <div>
+                <label for="{{ form.financial_year_id.id_for_label }}" class="required">Current Financial Year:</label>
+                {{ form.financial_year_id }}
+                <span class="error-message">{{ form.errors.financial_year_id }}</span>
+            </div>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="submit-button blue-button">Submit</button>
+            <button type="button" class="red-button" onclick="cancelForm()">Cancel</button>
+            <button type="button" class="gray-button" onclick="clearForm()">Clear</button>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/application_form.js' %}"></script>
+{% endblock %}

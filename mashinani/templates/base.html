@@ -1,0 +1,37 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bursary Mashinani</title>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <header class="header">
+        <h1 class="page-title-white">Bursary Mashinani</h1>
+        <nav>
+            <a href="#" class="logout-button">Logout</a>
+        </nav>
+    </header>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Bursary Mashinani. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // JavaScript code to ask for confirmation before logout
+        document.querySelector('.logout-button').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default action of the link
+            var confirmation = confirm('Are you sure you want to logout?');
+            if (confirmation) {
+                window.location.href = "{% url 'login' %}"; // Redirect to logout URL
+            }
+        });
+    </script>
+</body>
+</html>

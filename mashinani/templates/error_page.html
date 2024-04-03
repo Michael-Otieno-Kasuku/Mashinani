@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="error-container">
+    <h2 class="error-title">Report Generation Failed!</h2>
+    <p class="serial-number">Bursary application for the provided serial number does not exist.</p>
+    <a href="{% url 'landing_page' %}" class="text-link">Return to Home</a>
+</div>
+{% endblock %}
