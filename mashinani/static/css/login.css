@@ -1,3 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -6,18 +13,18 @@
 }
 
 .login-form {
-    max-width: 350px;
-    width: 100%;
-    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    padding: 40px;
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .form-title {
     text-align: center;
-    color: #3498db;
-    margin-bottom: 20px;
+    color: #333;
+    margin-bottom: 30px;
 }
 
 .form-group {
@@ -27,12 +34,13 @@
 .form-group label {
     font-weight: bold;
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    color: #555;
 }
 
 .form-control {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -42,11 +50,12 @@
     background-color: #007bff;
     border: none;
     color: #fff;
-    padding: 12px 20px;
+    padding: 14px 20px;
     font-size: 18px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%;
 }
 
 .btn-primary:hover {
@@ -56,10 +65,12 @@
 .error-message {
     color: #ff0000;
     font-size: 14px;
+    margin-top: 5px;
 }
 
 .text-center {
     text-align: center;
+    margin-top: 20px;
 }
 
 .text-link {
@@ -69,4 +80,11 @@
 
 .text-link:hover {
     text-decoration: underline;
+}
+
+/* Media Query for smaller screens */
+@media screen and (max-width: 768px) {
+    .login-form {
+        padding: 30px;
+    }
 }

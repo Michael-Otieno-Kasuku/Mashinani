@@ -20,3 +20,10 @@
     text-decoration: underline;
 }
 
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 600px) {
+    .success-container {
+        margin: 20px auto;
+        padding: 10px;
+    }
+}

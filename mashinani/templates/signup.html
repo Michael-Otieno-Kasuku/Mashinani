@@ -1,5 +1,4 @@
 {% extends 'base_authentication.html' %}
-
 {% load static %}
 
 {% block content %}
@@ -35,8 +34,7 @@
             {% endfor %}
             <button type="submit" class="btn-primary">Sign Up</button>
         </form>
-            <p>Already have an account? <a href="{% url 'login' %}" class="text-link">Log In</a></p>
-        </div>
+        <p class="text-center">Already have an account? <a href="{% url 'login' %}" class="text-link">Log In</a></p>
     </div>
 </div>
 {% endblock %}

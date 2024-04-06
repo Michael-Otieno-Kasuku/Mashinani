@@ -12,7 +12,12 @@
     <header class="header">
         <h1 class="page-title-white">Bursary Mashinani</h1>
         <nav>
-            <a href="#" class="logout-button">Logout</a>
+            <div class="dropdown">
+                <button class="logout-button">Account</button>
+                <div class="dropdown-content" id="dropdownContent">
+                    <a href="#" id="logoutConfirm">Logout</a>
+                </div>
+            </div>
         </nav>
     </header>
     <div class="container">
@@ -24,8 +29,26 @@
     </footer>
 
     <script>
+        // JavaScript code to toggle the dropdown menu
+        document.querySelector('.logout-button').addEventListener('click', function() {
+            document.getElementById('dropdownContent').classList.toggle('show');
+        });
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function(event) {
+            if (!event.target.matches('.logout-button')) {
+                var dropdowns = document.getElementsByClassName('dropdown-content');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        };
+
         // JavaScript code to ask for confirmation before logout
-        document.querySelector('.logout-button').addEventListener('click', function(event) {
+        document.getElementById('logoutConfirm').addEventListener('click', function(event) {
             event.preventDefault(); // Prevent the default action of the link
             var confirmation = confirm('Are you sure you want to logout?');
             if (confirmation) {

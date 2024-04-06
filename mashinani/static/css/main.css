@@ -7,9 +7,13 @@ body {
 
 .header {
     background: #3498db;
-    color: #fff;
     padding: 20px;
+    text-align: right;
+}
+
+.header h1{
     text-align: center;
+    color: #fff;
 }
 
 .page-title {
@@ -292,21 +296,6 @@ input[type="text"].invalid-input {
     font-size: 14px;
 }
 
-.logout-button {
-    color: white;
-    background-color: #007bff; /* Blue color */
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.logout-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    color: white;
-}
-
 .text-link {
     color: #007bff;
     text-decoration: none;
@@ -314,4 +303,63 @@ input[type="text"].invalid-input {
 
 .text-link:hover {
     text-decoration: underline;
+}
+
+/* Dropdown Button */
+.logout-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    padding: 0;
+}
+
+.logout-button:hover{
+    text-decoration: underline;
+}
+/* Dropdown Container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    z-index: 1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Show the dropdown menu when the button is clicked */
+.show {
+    display: block;
+}
+
+/* Style the links inside the dropdown */
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 800px) {
+    .container {
+        max-width: 90%;
+    }
 }
