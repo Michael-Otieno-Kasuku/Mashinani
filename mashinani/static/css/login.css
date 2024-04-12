@@ -29,6 +29,7 @@ body {
 
 .form-group {
     margin-bottom: 20px;
+    position: relative;
 }
 
 .form-group label {
@@ -87,4 +88,25 @@ body {
     .login-form {
         padding: 30px;
     }
+}
+
+.password-toggle-container {
+    position: inline-block;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+}
+
+.password-toggle-container input[type="checkbox"] {
+    display: inline-block;
+}
+
+.password-toggle-label {
+    cursor: pointer;
+}
+
+.password-toggle-label span {
+    display: inline-block;
+    font-size: 14px;
+    margin-left: 10px;
 }

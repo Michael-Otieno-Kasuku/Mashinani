@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-%l$-a5r04#hpo0*z9!+be%_=zl=ff+0i6(uh%ha-b89rvlg%p^
 DEBUG = True
 
 # Ensure that all HTTP requests are redirected to HTTPS
-SECURE_SSL_REDIRECT = False
+#SECURE_SSL_REDIRECT = False
 
 ALLOWED_HOSTS = []
 
